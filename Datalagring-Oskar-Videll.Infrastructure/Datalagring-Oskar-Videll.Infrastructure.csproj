@@ -23,4 +23,8 @@
     <ProjectReference Include="..\Datalagring-Oskar-Videll.Domain\Datalagring-Oskar-Videll.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
