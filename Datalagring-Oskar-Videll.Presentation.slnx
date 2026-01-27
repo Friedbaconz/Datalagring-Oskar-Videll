@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="Datalagring-Oskar-Videll.Presentation.ConsoleApp/Datalagring-Oskar-Videll.Presentation.ConsoleApp.csproj" />
+  <Project Path="Datalagring-Oskar-Videll.Application/Datalagring-Oskar-Videll.Application.csproj" Id="81813445-a00f-4a91-8cab-89ad64975fa1" />
+  <Project Path="Datalagring-Oskar-Videll.Domain/Datalagring-Oskar-Videll.Domain.csproj" Id="babffe96-1606-4002-9f72-d6e660ee6602" />
+  <Project Path="Datalagring-Oskar-Videll.Infrastructure/Datalagring-Oskar-Videll.Infrastructure.csproj" Id="f3dacf3a-3203-4855-90ba-3adcf2f45063" />
+  <Project Path="Datalagring-Oskar-Videll.Presentation.Api/Datalagring-Oskar-Videll.Presentation.Api.csproj" Id="5169225f-d4df-480c-b0a9-e74b91d86f7c" />
 </Solution>

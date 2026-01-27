@@ -1,0 +1,6 @@
+@Datalagring_Oskar_Videll.Presentation.Api_HostAddress = http://localhost:5235
+
+POST {{Datalagring_Oskar_Videll.Presentation.Api_HostAddress}}/api/deltagare
+Accept: application/json
+
+###
