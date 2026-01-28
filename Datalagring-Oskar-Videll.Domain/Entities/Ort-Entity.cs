@@ -1,6 +1,6 @@
 ﻿
 
-namespace Datalagring_Oskar_Videll.Infrastructure.Entities;
+namespace Datalagring_Oskar_Videll.Domain.Entities;
 
 public class Ort_Entity
 {

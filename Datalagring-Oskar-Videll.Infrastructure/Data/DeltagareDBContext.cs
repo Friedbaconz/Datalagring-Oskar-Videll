@@ -1,4 +1,4 @@
-﻿using Datalagring_Oskar_Videll.Infrastructure.Entities;
+﻿using Datalagring_Oskar_Videll.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Datalagring_Oskar_Videll.Infrastructure.Data;

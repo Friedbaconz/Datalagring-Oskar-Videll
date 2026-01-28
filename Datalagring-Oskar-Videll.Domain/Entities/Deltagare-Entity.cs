@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Datalagring_Oskar_Videll.Infrastructure.Entities;
+namespace Datalagring_Oskar_Videll.Domain.Entities;
 
 public class DeltagareEntity
 {

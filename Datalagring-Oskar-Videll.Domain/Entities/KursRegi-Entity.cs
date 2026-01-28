@@ -1,5 +1,5 @@
 ﻿
-namespace Datalagring_Oskar_Videll.Infrastructure.Entities;
+namespace Datalagring_Oskar_Videll.Domain.Entities;
 
 public class KursRegi_Entity
 {
