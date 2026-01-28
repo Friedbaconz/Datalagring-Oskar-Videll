@@ -7,13 +7,15 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
 {
     public DbSet<DeltagareEntity> Deltagare => Set<DeltagareEntity>();
     public DbSet<Role_Entity> Roles => Set<Role_Entity>();
+    public DbSet<StatusTypeEntity> StatusTypes => Set<StatusTypeEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<DeltagareEntity>(entity => { 
+        modelBuilder.Entity<DeltagareEntity>(entity =>
+        {
 
             entity.ToTable("Deltagare");
-            
+
             entity.HasKey(e => e.Email).HasName("PK_Deltagare_Email");
 
             entity.Property(e => e.Email)
@@ -40,9 +42,16 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
 
             entity.ToTable(tb => tb.HasCheckConstraint("CK_Deltagare_Email_NotEmpty", "LTRIM(RTRIM('Email')) <> ''"));
 
+            entity.HasOne(d => d.StatusType)
+                .WithMany(p => p.Deltagare)
+                .HasForeignKey(d => d.StatusTypeId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Deltagare_StatusTypes_StatusTypeId");
+
         });
 
-        modelBuilder.Entity<Role_Entity>(entity => {
+        modelBuilder.Entity<Role_Entity>(entity =>
+        {
             entity.ToTable("Roles");
 
             entity.HasKey(e => e.RoleEmail).HasName("PK_Roles_Email");
@@ -77,5 +86,18 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                     e.ToTable("DeltagareRoles");
                 }
             );
+
+        modelBuilder.Entity<StatusTypeEntity>(entity =>
+        {
+            entity.ToTable("StatusTypes");
+            entity.HasKey(e => e.Id).HasName("PK_StatusTypes_Id");
+            entity.Property(e => e.StatusName)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.HasIndex(e => e.StatusName, "UQ_StatusTypes_StatusName").IsUnique();
+
+
+        });
+
     }
 }
