@@ -5,6 +5,7 @@ namespace Datalagring_Oskar_Videll.Application.Contracts;
 public interface IDeltagareRepository
 {
     Task<DeltagareDto> CreateAsync(CreateDeltagareDto DeltagareRequest, CancellationToken Ctoken);
+
     Task<DeltagareDto?> GetByEmailAsync(string email, CancellationToken Ctoken);
     Task<IReadOnlyList<DeltagareDto>> GetAllAsync(CancellationToken Ctoken);
 

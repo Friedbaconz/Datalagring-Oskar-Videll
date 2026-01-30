@@ -112,15 +112,15 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
             entity.Property(e => e.LarareEmail)
                 .IsRequired()
                 .HasMaxLength(255);
-            entity.Property(e => e.fornamn)
+            entity.Property(e => e.Fornamn)
                 .IsRequired()
                 .HasMaxLength(100);
-            entity.Property(e => e.mellannamn)
+            entity.Property(e => e.Mellannamn)
                 .HasMaxLength(100);
-            entity.Property(e => e.efternamn)
+            entity.Property(e => e.Efternamn)
                 .IsRequired()
                 .HasMaxLength(100);
-            entity.Property(e => e.kompentens)
+            entity.Property(e => e.Kompentens)
                 .IsRequired()
                 .HasMaxLength(500);
             entity.HasIndex(e => e.LarareEmail, "UQ_Larare_LarareEmail").IsUnique();
