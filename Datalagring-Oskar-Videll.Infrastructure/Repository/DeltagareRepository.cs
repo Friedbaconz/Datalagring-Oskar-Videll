@@ -13,7 +13,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
 
     public async Task<DeltagareDto> CreateAsync(CreateDeltagareDto DeltagareRequest, CancellationToken Ctoken)
     {
-        // Mappning CreateDeltagareDto to Deltagare entity
+
         var Entity = new DeltagareEntity
         {
             Fornamn = DeltagareRequest.Firstname,
@@ -24,7 +24,6 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
             StatusTypeId = 1
         };
 
-        //Save to database
         try
         {
             _context.Deltagare.Add(Entity);
@@ -103,20 +102,21 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
 
     public async Task<DeltagareDto?> UpdateAsync(string email, UpdateDeltagareDto DeltagareRequest, CancellationToken Ctoken)
     {
-        if (string.IsNullOrWhiteSpace(email))
+        if (DeltagareRequest.Email == string.Empty)
         {
             throw new ArgumentException("Email cannot be null or empty", nameof(email));
         }
-        var entity = await _context.Deltagare.SingleOrDefaultAsync(e => e.Email == email, Ctoken)
+        var entity = await _context.Deltagare.SingleOrDefaultAsync(e => e.Email == DeltagareRequest.Email, Ctoken)
             ?? throw new KeyNotFoundException($"Deltagare with email {email} not found");
 
-        entity.Email = email;
+        entity.Email = DeltagareRequest.Email;
         entity.Fornamn = DeltagareRequest.Firstname;
         entity.Mellannamn = DeltagareRequest.Middlename;
         entity.Efternamn = DeltagareRequest.Lastname;
         entity.Telefonnummer = DeltagareRequest.Phonenumber;
 
         await _context.SaveChangesAsync(Ctoken);
+
         return await _context.Deltagare
             .AsNoTracking()
             .Where(e => e.Email == email)

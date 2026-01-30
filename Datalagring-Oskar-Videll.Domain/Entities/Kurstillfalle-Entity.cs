@@ -3,7 +3,7 @@ namespace Datalagring_Oskar_Videll.Domain.Entities;
 
 public class Kurstillfalle_Entity
 {
-    public int KurstillfalleId { get; set; }
+    public Guid KursTillfallenId { get; set; }
 
     public string KursKod { get; set; } = null!;
     public Kurs_Entity Kurs { get; set; } = null!;
@@ -15,7 +15,7 @@ public class Kurstillfalle_Entity
     public int Ortid { get; set; }
     public Ort_Entity Ort { get; set; } = null!;
 
-    public ICollection<KurstillfalleLarare_Entity> KurstillfalleLarare { get; set; } = new List<KurstillfalleLarare_Entity>();
+    public virtual ICollection<KursRegi_Entity> KursRegi { get; set; } = [];
 
-    public ICollection<KursRegi_Entity> KursRegi { get; set; } = new List<KursRegi_Entity>();
+    public virtual ICollection<KurstillfalleLarare_Entity> KursTillfallenLarare { get; set; } = [];
 }

@@ -9,4 +9,6 @@ public class Kurs_Entity
     public string Kursnamn { get; set; } = null!;
 
     public string Beskrivning { get; set; } = null!;
+
+    public virtual ICollection<Kurstillfalle_Entity> Kurstillfallen { get; set; } = [];
 }

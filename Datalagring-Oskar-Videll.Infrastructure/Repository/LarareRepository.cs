@@ -5,6 +5,7 @@ using Datalagring_Oskar_Videll.Domain.Models.Deltagare;
 using Datalagring_Oskar_Videll.Domain.Models.Larare;
 using Datalagring_Oskar_Videll.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using static Dapper.SqlMapper;
 
 namespace Datalagring_Oskar_Videll.Infrastructure.Repository;
@@ -107,20 +108,22 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
 
     public async Task<LarareDto?> UpdateAsync(string email, UpdateLarareDto LarareRequest, CancellationToken Ctoken)
     {
-        if (string.IsNullOrWhiteSpace(email))
+        if (LarareRequest.Email == string.Empty)
         {
             throw new ArgumentException("Email cannot be null or empty", nameof(email));
         }
-        var entity = await _context.Larare.SingleOrDefaultAsync(e => e.LarareEmail == email, Ctoken)
+
+        var entity = await _context.Larare.SingleOrDefaultAsync(e => e.LarareEmail == LarareRequest.Email, Ctoken)
             ?? throw new KeyNotFoundException($"Larare with email {email} not found");
 
-        entity.LarareEmail = email;
+        entity.LarareEmail = LarareRequest.Email;
         entity.Fornamn = LarareRequest.Firstname;
         entity.Mellannamn = LarareRequest.Middlename!;
         entity.Efternamn = LarareRequest.Lastname;
         entity.Kompentens = LarareRequest.Kompentens;
 
         await _context.SaveChangesAsync(Ctoken);
+
         return await _context.Larare
             .AsNoTracking()
             .Where(e => e.LarareEmail == email)

@@ -13,8 +13,8 @@ public class DeltagareEntity
     public string Efternamn { get; set; } = null!;
     public string? Telefonnummer { get; set; }
 
+    public virtual ICollection<KursRegi_Entity> Kurstillfallen { get; set; } = [];
+
     public int StatusTypeId { get; set; }
     public StatusTypeEntity StatusType { get; set; } = null!;
-
-    public virtual ICollection<Role_Entity> Roles { get; set; } = [];
 }
