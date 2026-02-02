@@ -21,7 +21,6 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
             Efternamn = DeltagareRequest.Lastname,
             Email = DeltagareRequest.Email,
             Telefonnummer = DeltagareRequest.Phonenumber,
-            StatusTypeId = 1
         };
 
         try

@@ -43,6 +43,11 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                 .IsRequired(false)
                 .HasMaxLength(13);
 
+            entity.Property(e => e.Concurrency)
+                .IsRowVersion()
+                .IsConcurrencyToken()
+                .IsRequired();
+
             entity.HasIndex(e => e.Email, "UQ_Deltagare_Email").IsUnique();
 
             entity.ToTable(tb => tb.HasCheckConstraint("CK_Deltagare_Email_NotEmpty", "LTRIM(RTRIM('Email')) <> ''"));
@@ -50,31 +55,12 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
             entity.HasOne(d => d.StatusType)
                 .WithMany(p => p.Deltagare)
                 .HasForeignKey(d => d.StatusTypeId)
-                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_Deltagare_StatusTypes_StatusTypeId");
 
-            entity.HasMany(m => m.Kurstillfallen)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "KursRegi",
-                    r => r
-                        .HasOne<KursRegi_Entity>()
-                        .WithMany()
-                        .HasForeignKey("KursTillfallenId")
-                        .HasConstraintName("FK_KursRegi_KursTillfalle_KursTillfallenId")
-                        .OnDelete(DeleteBehavior.ClientSetNull),
-                    m => m
-                        .HasOne<DeltagareEntity>()
-                        .WithMany()
-                        .HasForeignKey("DeltagareEmail")
-                        .HasConstraintName("FK_KursRegi_Deltagare_DeltagareEmail")
-                        .OnDelete(DeleteBehavior.ClientSetNull),
-                    e =>
-                    {
-                        e.HasKey("KursTillfallenId", "DeltagareEmail").HasName("PK_KursRegi");
-                        e.ToTable("KursRegi");
-                    }
-                );
+            entity.HasMany(d => d.Kursregi)
+                .WithOne()
+                .HasForeignKey(kr => kr.DeltagareEmail)
+                .HasConstraintName("FK_Deltagare_KursRegi_DeltagareEmail");
 
         });
 
@@ -108,31 +94,13 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
             entity.Property(e => e.Kompentens)
                 .IsRequired()
                 .HasMaxLength(500);
+
             entity.HasIndex(e => e.LarareEmail, "UQ_Larare_LarareEmail").IsUnique();
+
             entity.ToTable(tb => tb.HasCheckConstraint("CK_Larare_LarareEmail_NotEmpty", "LTRIM(RTRIM('LarareEmail')) <> ''"));
 
-            entity.HasMany(m => m.KurstillfalleLarare)
-                .WithMany()
-                .UsingEntity<Dictionary<string, object>>(
-                    "KurstillfalleLarare",
-                    r => r
-                        .HasOne<KurstillfalleLarare_Entity>()
-                        .WithMany()
-                        .HasForeignKey("KursTillfallenId")
-                        .HasConstraintName("FK_KurstillfalleLarare_KursTillfalle_KursTillfallenId")
-                        .OnDelete(DeleteBehavior.ClientSetNull),
-                    m => m
-                        .HasOne<Larare_Entity>()
-                        .WithMany()
-                        .HasForeignKey("LarareEmail")
-                        .HasConstraintName("FK_KurstillfalleLarare_Larare_LarareEmail")
-                        .OnDelete(DeleteBehavior.ClientSetNull),
-                    e =>
-                    {
-                        e.HasKey("KursTillfallenId", "LarareEmail").HasName("PK_KurstillfalleLarare");
-                        e.ToTable("KurstillfalleLarare");
-                    }
-                );
+
+
         });
 
         modelBuilder.Entity<Kurstillfalle_Entity>(entity =>
@@ -152,19 +120,33 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
             entity.Property(e => e.Slutdatum)
                 .IsRequired();
 
-            entity.HasOne<Kurs_Entity>()
+            entity.HasOne(e => e.Kurs)
                 .WithMany()
                 .HasForeignKey(e => e.KursKod)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_KursTillfalle_Kurs_Kurskod");
+                .HasConstraintName("FK_KursTillfalle_Kurs_KursKod");
 
-            entity.HasOne<Ort_Entity>()
+            entity.HasOne(e => e.Ort)
                 .WithMany()
                 .HasForeignKey(e => e.Ortid)
-                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_KursTillfalle_Ort_Ortid");
 
         });
+
+        modelBuilder.Entity<KursRegi_Entity>(entity =>
+        {
+            entity.ToTable("KursRegi");
+            entity.HasKey(e => e.KursRegiId).HasName("PK_KursRegi_KursRegiId");
+            entity.Property(e => e.KursRegiId);
+            entity.Property(e => e.DeltagareEmail)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.KursRegiId)
+                .IsRequired();
+            entity.Property(e => e.RegiDatum)
+                .IsRequired();
+
+        });
+
 
         modelBuilder.Entity<Kurs_Entity>(entity =>
         {
@@ -181,11 +163,7 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                 .HasMaxLength(1000);
             entity.HasIndex(e => e.Kursnamn, "UQ_Kurs_Kursnamn").IsUnique();
 
-            entity.HasMany(m => m.Kurstillfallen)
-                .WithOne(e => e.Kurs)
-                .HasForeignKey(e => e.KursKod)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Kurs_KursTillfalle_Kurskod");
+
         });
 
         modelBuilder.Entity<Ort_Entity>(entity =>
@@ -196,35 +174,6 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                 .IsRequired()
                 .HasMaxLength(100);
             entity.HasIndex(e => e.OrtNamn, "UQ_Ort_Ortnamn").IsUnique();
-
-            entity.HasMany(m => m.Kurstillfallen)
-                .WithOne(e => e.Ort)
-                .HasForeignKey(e => e.Ortid)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Ort_KursTillfalle_Ortid");
-        });
-
-        modelBuilder.Entity<KursRegi_Entity>(entity =>
-        {
-            entity.ToTable("KursRegi");
-            entity.HasKey(e => new { e.KursTillfallenId, e.DeltagareEmail }).HasName("PK_KursRegi_KurstillfalleId");
-            entity.Property(e => e.KursTillfallenId)
-                .IsRequired();
-            entity.Property(e => e.DeltagareEmail)
-                .IsRequired()
-                .HasMaxLength(255);
-            entity.Property(e => e.RegiDatum)
-                .IsRequired();
-            entity.Property(e => e.status)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            entity.HasOne<DeltagareEntity>()
-                .WithMany()
-                .HasForeignKey(e => e.DeltagareEmail)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_KursRegi_Deltagare_DeltagareEmail");
-
         });
 
         modelBuilder.Entity<KurstillfalleLarare_Entity>(entity =>
@@ -236,14 +185,7 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
             entity.Property(e => e.LarareEmail)
                 .IsRequired()
                 .HasMaxLength(255);
-
-            entity.HasOne<Larare_Entity>()
-                .WithMany()
-                .HasForeignKey(e => e.LarareEmail)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_KurstillfalleLarare_Larare_LarareEmail");
         });
-
     }
 
 }

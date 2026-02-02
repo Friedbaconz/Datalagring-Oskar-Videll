@@ -30,11 +30,11 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
             _context.Larare.Add(entity);
             await _context.SaveChangesAsync(Ctoken);
 
-            return new LarareDto(Email: entity.LarareEmail,
-                                 Firstname: entity.Fornamn,
-                                 Middlename: entity.Mellannamn,
-                                 Lastname: entity.Efternamn,
-                                 Kompentens: entity.Kompentens);
+            return new LarareDto(entity.LarareEmail,
+                                 entity.Fornamn,
+                                 entity.Mellannamn,
+                                 entity.Efternamn,
+                                 entity.Kompentens);
 
         }
         catch (Exception ex)

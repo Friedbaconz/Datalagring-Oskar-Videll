@@ -10,8 +10,6 @@ public sealed record KurstillfalleDto(
 
     string KursKod,
 
-    Kurs_Entity kurs,
-
     DateTime Startdatum,
 
     DateTime Slutdatum,
@@ -20,13 +18,6 @@ public sealed record KurstillfalleDto(
 
     string LarareEmail,
 
-    int Ortid,
-
-    Ort_Entity Ort,
-
-    ICollection<KursRegi_Entity> KursrgisteringsId,
-
-    ICollection<KurstillfalleLarare_Entity> KursTillfallenLarare
-
+    Guid Ortid
  );
 

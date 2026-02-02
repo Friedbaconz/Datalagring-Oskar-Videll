@@ -6,5 +6,5 @@ public class Ort_Entity
 {
     public Guid OrtId { get; set; }
     public string OrtNamn { get; set; } = null!;
-    public virtual ICollection<Kurstillfalle_Entity> Kurstillfallen { get; set; } = [];
+    public Kurstillfalle_Entity Kurstillfallen = null!;
 }

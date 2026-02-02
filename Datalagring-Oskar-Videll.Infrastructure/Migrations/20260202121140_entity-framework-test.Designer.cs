@@ -3,6 +3,7 @@ using System;
 using Datalagring_Oskar_Videll.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 {
     [DbContext(typeof(DeltagareDBContext))]
-    partial class DeltagareDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260202121140_entity-framework-test")]
+    partial class entityframeworktest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
