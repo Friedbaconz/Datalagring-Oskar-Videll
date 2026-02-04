@@ -1,11 +1,11 @@
-﻿namespace Datalagring_Oskar_Videll.Tests
+﻿namespace DatalagringOskarVidell.Tests
 {
     public class UnitTest1
     {
         [Fact]
-        public void Test1()
+        public async Task CreateDeltagareWorksIfreturntrue()
         {
-
+            
         }
     }
 }

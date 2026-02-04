@@ -1,8 +1,8 @@
 ﻿
 
-using Datalagring_Oskar_Videll.Domain.Models.KursTillfallen;
+using DatalagringOskarVidell.Domain.Models.KursTillfallen;
 
-namespace Datalagring_Oskar_Videll.Application.Contracts;
+namespace DatalagringOskarVidell.Application.Contracts;
 
 public interface IKursTillfalleRepository
 {

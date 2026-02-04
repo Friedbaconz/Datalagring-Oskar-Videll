@@ -1,8 +1,8 @@
 ﻿
 
-using Datalagring_Oskar_Videll.Domain.Entities;
+using DatalagringOskarVidell.Domain.Entities;
 
-namespace Datalagring_Oskar_Videll.Domain.Models.Ort;
+namespace DatalagringOskarVidell.Domain.Models.Ort;
 
 public sealed record OrtDto(
     Guid Ortid,

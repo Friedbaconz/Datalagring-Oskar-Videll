@@ -6,11 +6,28 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class entityframeworktest : Migration
+    public partial class entitydeltagarecontext : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Deltagare",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Fornamn = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Mellannamn = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Efternamn = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    Telefonnummer = table.Column<string>(type: "character varying(13)", unicode: false, maxLength: 13, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Deltagare_id", x => x.Id);
+                    table.CheckConstraint("CK_Deltagare_Email_NotEmpty", "LTRIM(RTRIM('Email')) <> ''");
+                });
+
             migrationBuilder.CreateTable(
                 name: "Kurs",
                 columns: table => new
@@ -28,7 +45,7 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 name: "KurstillfalleLarare",
                 columns: table => new
                 {
-                    KursTillfallenId = table.Column<int>(type: "integer", nullable: false),
+                    KursTillfallenId = table.Column<Guid>(type: "uuid", nullable: false),
                     LarareEmail = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
@@ -49,15 +66,29 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "StatusTypes",
+                name: "KursRegi",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    StatusName = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
+                    KursRegiId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DeltagareEmail = table.Column<Guid>(type: "uuid", maxLength: 255, nullable: false),
+                    RegiDatum = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    status = table.Column<string>(type: "text", nullable: false),
+                    Kurs_EntityKurskod = table.Column<string>(type: "character varying(50)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StatusTypes_Id", x => x.Id);
+                    table.PrimaryKey("PK_KursRegi_KursRegiId", x => x.KursRegiId);
+                    table.ForeignKey(
+                        name: "FK_Deltagare_KursRegi_DeltagareEmail",
+                        column: x => x.DeltagareEmail,
+                        principalTable: "Deltagare",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_KursRegi_Kurs_Kurs_EntityKurskod",
+                        column: x => x.Kurs_EntityKurskod,
+                        principalTable: "Kurs",
+                        principalColumn: "Kurskod");
                 });
 
             migrationBuilder.CreateTable(
@@ -69,7 +100,7 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     Mellannamn = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Efternamn = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     Kompentens = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    KurstillfalleLarare_EntityKursTillfallenId = table.Column<int>(type: "integer", nullable: true),
+                    KurstillfalleLarare_EntityKursTillfallenId = table.Column<Guid>(type: "uuid", nullable: true),
                     KurstillfalleLarare_EntityLarareEmail = table.Column<string>(type: "character varying(255)", nullable: true)
                 },
                 constraints: table =>
@@ -111,61 +142,6 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                         principalColumn: "OrtId",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "Deltagare",
-                columns: table => new
-                {
-                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Concurrency = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
-                    Fornamn = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Mellannamn = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    Efternamn = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Telefonnummer = table.Column<string>(type: "character varying(13)", unicode: false, maxLength: 13, nullable: true),
-                    StatusTypeId = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Deltagare_Email", x => x.Email);
-                    table.CheckConstraint("CK_Deltagare_Email_NotEmpty", "LTRIM(RTRIM('Email')) <> ''");
-                    table.ForeignKey(
-                        name: "FK_Deltagare_StatusTypes_StatusTypeId",
-                        column: x => x.StatusTypeId,
-                        principalTable: "StatusTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "KursRegi",
-                columns: table => new
-                {
-                    KursRegiId = table.Column<Guid>(type: "uuid", nullable: false),
-                    DeltagareEmail = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    RegiDatum = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    status = table.Column<string>(type: "text", nullable: false),
-                    Kurs_EntityKurskod = table.Column<string>(type: "character varying(50)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_KursRegi_KursRegiId", x => x.KursRegiId);
-                    table.ForeignKey(
-                        name: "FK_Deltagare_KursRegi_DeltagareEmail",
-                        column: x => x.DeltagareEmail,
-                        principalTable: "Deltagare",
-                        principalColumn: "Email",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_KursRegi_Kurs_Kurs_EntityKurskod",
-                        column: x => x.Kurs_EntityKurskod,
-                        principalTable: "Kurs",
-                        principalColumn: "Kurskod");
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Deltagare_StatusTypeId",
-                table: "Deltagare",
-                column: "StatusTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "UQ_Deltagare_Email",
@@ -215,12 +191,6 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 table: "Ort",
                 column: "OrtNamn",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "UQ_StatusTypes_StatusName",
-                table: "StatusTypes",
-                column: "StatusName",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -246,9 +216,6 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "KurstillfalleLarare");
-
-            migrationBuilder.DropTable(
-                name: "StatusTypes");
         }
     }
 }

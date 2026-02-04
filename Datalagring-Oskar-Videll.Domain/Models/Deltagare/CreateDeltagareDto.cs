@@ -1,7 +1,7 @@
 ﻿
 
-namespace Datalagring_Oskar_Videll.Domain.Models.Deltagare;
+namespace DatalagringOskarVidell.Domain.Models.Deltagare;
 
-public sealed record CreateDeltagareDto(string Email, string Firstname, string? Middlename, string Lastname, string? Phonenumber);
+public sealed record CreateDeltagareDto(string Firstname, string? Middlename, string Lastname, string Email, string? Phonenumber);
 
 

@@ -1,8 +1,8 @@
 ﻿
 
-using Datalagring_Oskar_Videll.Domain.Entities;
+using DatalagringOskarVidell.Domain.Entities;
 
-namespace Datalagring_Oskar_Videll.Domain.Models.KursTillfallen;
+namespace DatalagringOskarVidell.Domain.Models.KursTillfallen;
 
 public sealed record KurstillfalleDto(
 

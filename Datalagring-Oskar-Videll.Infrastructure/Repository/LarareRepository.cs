@@ -1,14 +1,14 @@
 ﻿
-using Datalagring_Oskar_Videll.Application.Contracts;
-using Datalagring_Oskar_Videll.Domain.Entities;
-using Datalagring_Oskar_Videll.Domain.Models.Deltagare;
-using Datalagring_Oskar_Videll.Domain.Models.Larare;
-using Datalagring_Oskar_Videll.Infrastructure.Data;
+using DatalagringOskarVidell.Application.Contracts;
+using DatalagringOskarVidell.Domain.Entities;
+using DatalagringOskarVidell.Domain.Models.Deltagare;
+using DatalagringOskarVidell.Domain.Models.Larare;
+using DatalagringOskarVidell.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using static Dapper.SqlMapper;
 
-namespace Datalagring_Oskar_Videll.Infrastructure.Repository;
+namespace DatalagringOskarVidell.Infrastructure.Repository;
 
 public class LarareRepository(DeltagareDBContext context) : ILarareRepository
 {

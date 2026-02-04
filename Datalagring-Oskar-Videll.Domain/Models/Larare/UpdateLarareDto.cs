@@ -1,5 +1,5 @@
 ﻿
-namespace Datalagring_Oskar_Videll.Domain.Models.Larare;
+namespace DatalagringOskarVidell.Domain.Models.Larare;
 
 public sealed record UpdateLarareDto(
     string Email,

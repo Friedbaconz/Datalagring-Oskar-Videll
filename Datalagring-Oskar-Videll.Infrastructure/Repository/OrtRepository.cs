@@ -1,11 +1,11 @@
 ﻿
 
-using Datalagring_Oskar_Videll.Application.Contracts;
-using Datalagring_Oskar_Videll.Domain.Models.Ort;
-using Datalagring_Oskar_Videll.Infrastructure.Data;
+using DatalagringOskarVidell.Application.Contracts;
+using DatalagringOskarVidell.Domain.Models.Ort;
+using DatalagringOskarVidell.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Datalagring_Oskar_Videll.Infrastructure.Repository;
+namespace DatalagringOskarVidell.Infrastructure.Repository;
 
 public class OrtRepository(DeltagareDBContext context) : IOrtRepository
 {

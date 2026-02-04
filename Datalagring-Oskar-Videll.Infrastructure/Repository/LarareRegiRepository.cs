@@ -1,13 +1,13 @@
-﻿using Datalagring_Oskar_Videll.Application.Contracts;
-using Datalagring_Oskar_Videll.Domain.Entities;
-using Datalagring_Oskar_Videll.Domain.Models.KursRegi.LarareRegi;
-using Datalagring_Oskar_Videll.Infrastructure.Data;
+﻿using DatalagringOskarVidell.Application.Contracts;
+using DatalagringOskarVidell.Domain.Entities;
+using DatalagringOskarVidell.Domain.Models.KursRegi.LarareRegi;
+using DatalagringOskarVidell.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Datalagring_Oskar_Videll.Infrastructure.Repository;
+namespace DatalagringOskarVidell.Infrastructure.Repository;
 
 public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRepository
 {

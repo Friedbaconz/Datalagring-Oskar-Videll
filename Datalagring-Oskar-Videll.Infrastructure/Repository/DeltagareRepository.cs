@@ -1,11 +1,11 @@
 ﻿
-using Datalagring_Oskar_Videll.Application.Contracts;
-using Datalagring_Oskar_Videll.Domain.Models.Deltagare;
-using Datalagring_Oskar_Videll.Infrastructure.Data;
-using Datalagring_Oskar_Videll.Domain.Entities;
+using DatalagringOskarVidell.Application.Contracts;
+using DatalagringOskarVidell.Domain.Models.Deltagare;
+using DatalagringOskarVidell.Infrastructure.Data;
+using DatalagringOskarVidell.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Datalagring_Oskar_Videll.Infrastructure.Repository;
+namespace DatalagringOskarVidell.Infrastructure.Repository;
 
 public class DeltagareRepository(DeltagareDBContext context) : IDeltagareRepository
 {
@@ -23,18 +23,11 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
             Telefonnummer = DeltagareRequest.Phonenumber,
         };
 
-        try
-        {
-            _context.Deltagare.Add(Entity);
+
+            _context.Deltagare_Entity.Add(Entity);
             await _context.SaveChangesAsync(Ctoken);
 
-            return new DeltagareDto(Entity.Email, Entity.Fornamn, Entity.Mellannamn, Entity.Efternamn, Entity.Telefonnummer);
-
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Could not create Deltagare", ex);
-        }
+            return new DeltagareDto(Entity.Id, Entity.Fornamn, Entity.Mellannamn, Entity.Efternamn, Entity.Email, Entity.Telefonnummer);
 
     }
 
@@ -46,14 +39,14 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
             throw new ArgumentException("Email cannot be null or empty", nameof(email));
         }
 
-        var entity = await _context.Deltagare.SingleOrDefaultAsync(e => e.Email == email, Ctoken);
+        var entity = await _context.Deltagare_Entity.SingleOrDefaultAsync(e => e.Email == email, Ctoken);
 
         if (entity == null)
         {
             throw new KeyNotFoundException($"Deltagare with email {email} not found");
         }
 
-        _context.Deltagare.Remove(entity);
+        _context.Deltagare_Entity.Remove(entity);
         await _context.SaveChangesAsync(Ctoken);
         return true;
     }
@@ -61,16 +54,17 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
 
     public async Task<IReadOnlyList<DeltagareDto>> GetAllAsync(CancellationToken Ctoken)
     {
-       var entities = await _context.Deltagare
+       var entities = await _context.Deltagare_Entity
             .AsNoTracking()
             .OrderBy(e => e.Efternamn)
             .ThenBy(e => e.Fornamn)
             .Select(e => new DeltagareDto
             (
-                e.Email,
+                e.Id,
                 e.Fornamn,
                 e.Mellannamn,
                 e.Efternamn,
+                e.Email,
                 e.Telefonnummer
             ))
             .ToListAsync(Ctoken);
@@ -85,14 +79,15 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
         {
             throw new ArgumentException("Email cannot be null or empty", nameof(email));
         }
-        var deltagare = await _context.Deltagare
+        var deltagare = await _context.Deltagare_Entity
             .AsNoTracking()
             .Select(e => new DeltagareDto
             (
-                e.Email,
+                e.Id,
                 e.Fornamn,
                 e.Mellannamn,
                 e.Efternamn,
+                e.Email,
                 e.Telefonnummer
             ))
             .SingleOrDefaultAsync(e => e.Email == email, Ctoken);
@@ -105,7 +100,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
         {
             throw new ArgumentException("Email cannot be null or empty", nameof(email));
         }
-        var entity = await _context.Deltagare.SingleOrDefaultAsync(e => e.Email == DeltagareRequest.Email, Ctoken)
+        var entity = await _context.Deltagare_Entity.SingleOrDefaultAsync(e => e.Email == DeltagareRequest.Email, Ctoken)
             ?? throw new KeyNotFoundException($"Deltagare with email {email} not found");
 
         entity.Email = DeltagareRequest.Email;
@@ -116,15 +111,16 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
 
         await _context.SaveChangesAsync(Ctoken);
 
-        return await _context.Deltagare
+        return await _context.Deltagare_Entity
             .AsNoTracking()
             .Where(e => e.Email == email)
             .Select(e => new DeltagareDto
             (
-                e.Email,
+                e.Id,
                 e.Fornamn,
                 e.Mellannamn,
                 e.Efternamn,
+                e.Email,
                 e.Telefonnummer
             ))
             .SingleOrDefaultAsync(e => e.Email == email, Ctoken);

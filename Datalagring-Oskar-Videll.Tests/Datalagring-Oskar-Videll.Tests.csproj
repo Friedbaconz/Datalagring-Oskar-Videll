@@ -16,6 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Datalagring-Oskar-Videll.Application\Datalagring-Oskar-Videll.Application.csproj" />
+    <ProjectReference Include="..\Datalagring-Oskar-Videll.Domain\Datalagring-Oskar-Videll.Domain.csproj" />
+    <ProjectReference Include="..\Datalagring-Oskar-Videll.Infrastructure\Datalagring-Oskar-Videll.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 

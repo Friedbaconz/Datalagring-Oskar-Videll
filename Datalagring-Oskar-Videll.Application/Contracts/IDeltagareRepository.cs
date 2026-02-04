@@ -1,6 +1,6 @@
-﻿using Datalagring_Oskar_Videll.Domain.Models.Deltagare;
+﻿using DatalagringOskarVidell.Domain.Models.Deltagare;
 
-namespace Datalagring_Oskar_Videll.Application.Contracts;
+namespace DatalagringOskarVidell.Application.Contracts;
 
 public interface IDeltagareRepository
 {

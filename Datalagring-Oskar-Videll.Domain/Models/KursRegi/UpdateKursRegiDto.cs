@@ -1,11 +1,11 @@
 ﻿
 
-namespace Datalagring_Oskar_Videll.Domain.Models.KursRegi;
+namespace DatalagringOskarVidell.Domain.Models.KursRegi;
 
 public sealed record UpdateKursRegiDto(
     
     Guid KursRegiId,
-    string StudentEmail,
+    Guid StudentEmail,
     DateTime RegistrationDate,
     string Status
 );

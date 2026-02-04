@@ -1,7 +1,7 @@
 ﻿
-namespace Datalagring_Oskar_Videll.Application.Contracts;
+namespace DatalagringOskarVidell.Application.Contracts;
 
-using Datalagring_Oskar_Videll.Domain.Models.Larare;
+using DatalagringOskarVidell.Domain.Models.Larare;
 public interface ILarareRepository
 {
     Task<LarareDto> CreateAsync(CreateLarareDto LarareRequest, CancellationToken Ctoken);

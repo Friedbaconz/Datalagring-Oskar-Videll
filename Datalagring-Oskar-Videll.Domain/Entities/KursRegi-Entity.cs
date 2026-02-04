@@ -1,12 +1,12 @@
 ﻿
-namespace Datalagring_Oskar_Videll.Domain.Entities;
+namespace DatalagringOskarVidell.Domain.Entities;
 
 public class KursRegi_Entity
 {
     public Guid KursRegiId { get; set; }
     public ICollection<Kurstillfalle_Entity> Kurstillfallen = [];
 
-    public string DeltagareEmail { get; set; } = null!;
+    public Guid DeltagareEmail { get; set; }
     public ICollection<DeltagareEntity> DeltagareRegi = [];
 
     public DateTime RegiDatum { get; set; }

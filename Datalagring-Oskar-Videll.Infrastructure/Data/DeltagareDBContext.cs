@@ -1,12 +1,11 @@
-﻿using Datalagring_Oskar_Videll.Domain.Entities;
+﻿using DatalagringOskarVidell.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Datalagring_Oskar_Videll.Infrastructure.Data;
+namespace DatalagringOskarVidell.Infrastructure.Data;
 
 public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> options) : DbContext(options)
 {
-    public DbSet<DeltagareEntity> Deltagare => Set<DeltagareEntity>();
-    public DbSet<StatusTypeEntity> StatusTypes => Set<StatusTypeEntity>();
+    public DbSet<DeltagareEntity> Deltagare_Entity => Set<DeltagareEntity>();
     public DbSet<Ort_Entity> Ort => Set<Ort_Entity>();
     public DbSet<Kurstillfalle_Entity> KursTillfalle => Set<Kurstillfalle_Entity>();
     public DbSet<Kurs_Entity> Kurs => Set<Kurs_Entity>();
@@ -21,11 +20,10 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
 
             entity.ToTable("Deltagare");
 
-            entity.HasKey(e => e.Email).HasName("PK_Deltagare_Email");
+            entity.HasKey(e => e.Id).HasName("PK_Deltagare_id");
 
-            entity.Property(e => e.Email)
-                .IsRequired()
-                .HasMaxLength(255);
+            entity.Property(e => e.Id)
+                .ValueGeneratedOnAdd();
 
             entity.Property(e => e.Fornamn)
                 .IsRequired()
@@ -38,41 +36,23 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                 .IsRequired()
                 .HasMaxLength(100);
 
+            entity.Property(e => e.Email)
+                .IsRequired()
+                .HasMaxLength(255);
+
             entity.Property(e => e.Telefonnummer)
                 .IsUnicode(false)
                 .IsRequired(false)
                 .HasMaxLength(13);
 
-            entity.Property(e => e.Concurrency)
-                .IsRowVersion()
-                .IsConcurrencyToken()
-                .IsRequired();
-
             entity.HasIndex(e => e.Email, "UQ_Deltagare_Email").IsUnique();
 
             entity.ToTable(tb => tb.HasCheckConstraint("CK_Deltagare_Email_NotEmpty", "LTRIM(RTRIM('Email')) <> ''"));
-
-            entity.HasOne(d => d.StatusType)
-                .WithMany(p => p.Deltagare)
-                .HasForeignKey(d => d.StatusTypeId)
-                .HasConstraintName("FK_Deltagare_StatusTypes_StatusTypeId");
 
             entity.HasMany(d => d.Kursregi)
                 .WithOne()
                 .HasForeignKey(kr => kr.DeltagareEmail)
                 .HasConstraintName("FK_Deltagare_KursRegi_DeltagareEmail");
-
-        });
-
-        modelBuilder.Entity<StatusTypeEntity>(entity =>
-        {
-            entity.ToTable("StatusTypes");
-            entity.HasKey(e => e.Id).HasName("PK_StatusTypes_Id");
-            entity.Property(e => e.StatusName)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.HasIndex(e => e.StatusName, "UQ_StatusTypes_StatusName").IsUnique();
-
 
         });
 

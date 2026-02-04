@@ -1,11 +1,12 @@
 ﻿
 
-namespace Datalagring_Oskar_Videll.Domain.Models.Deltagare;
+namespace DatalagringOskarVidell.Domain.Models.Deltagare;
 
 public sealed record UpdateDeltagareDto(
-    string Email,
+    Guid Id,
     string Firstname,
     string? Middlename,
     string Lastname,
-    string Phonenumber
+    string Email,
+    string? Phonenumber
 );

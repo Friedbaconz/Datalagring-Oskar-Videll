@@ -1,8 +1,8 @@
 ﻿
-using Datalagring_Oskar_Videll.Domain.Models.Kurs;
-using Datalagring_Oskar_Videll.Domain.Models.KursRegi;
+using DatalagringOskarVidell.Domain.Models.Kurs;
+using DatalagringOskarVidell.Domain.Models.KursRegi;
 
-namespace Datalagring_Oskar_Videll.Application.Contracts;
+namespace DatalagringOskarVidell.Application.Contracts;
 
 public interface IKursRegiRepository
 {

@@ -1,7 +1,7 @@
 ﻿
-using Datalagring_Oskar_Videll.Domain.Models.Ort;
+using DatalagringOskarVidell.Domain.Models.Ort;
 
-namespace Datalagring_Oskar_Videll.Application.Contracts;
+namespace DatalagringOskarVidell.Application.Contracts;
 
 public interface IOrtRepository
 {

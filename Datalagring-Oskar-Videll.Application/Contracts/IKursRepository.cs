@@ -1,9 +1,9 @@
 ﻿
-using Datalagring_Oskar_Videll.Domain.Models.Deltagare;
-using Datalagring_Oskar_Videll.Domain.Models.Kurs;
-using Datalagring_Oskar_Videll.Domain.Models.Larare;
+using DatalagringOskarVidell.Domain.Models.Deltagare;
+using DatalagringOskarVidell.Domain.Models.Kurs;
+using DatalagringOskarVidell.Domain.Models.Larare;
 
-namespace Datalagring_Oskar_Videll.Application.Contracts;
+namespace DatalagringOskarVidell.Application.Contracts;
 
 public interface IKursRepository
 {

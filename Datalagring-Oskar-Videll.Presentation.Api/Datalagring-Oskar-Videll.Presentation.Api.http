@@ -1,6 +1,14 @@
-@Datalagring_Oskar_Videll.Presentation.Api_HostAddress = http://localhost:5235
+@Testing = https://localhost:7035
 
-POST {{Datalagring_Oskar_Videll.Presentation.Api_HostAddress}}/api/deltagare
-Accept: application/json
+
+POST {{Testing}}/api/Deltagare
+Content-Type: application/json
+{
+         "Email":"Email@a.b",
+         "Firstname":"Testing",
+         "Middlename":"MiddlenameTest",
+         "Lastname":"Lastname",
+         "Phonenumber":"123456789"
+}
 
 ###

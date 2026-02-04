@@ -1,6 +1,6 @@
 ﻿
 
-namespace Datalagring_Oskar_Videll.Domain.Models.Kurs;
+namespace DatalagringOskarVidell.Domain.Models.Kurs;
 
 public sealed record KursDto(
     string KursId,

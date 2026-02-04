@@ -1,9 +1,9 @@
 ﻿
 
-using Datalagring_Oskar_Videll.Domain.Models.KursRegi.LarareRegi;
-using Datalagring_Oskar_Videll.Domain.Models.KursTillfallen;
+using DatalagringOskarVidell.Domain.Models.KursRegi.LarareRegi;
+using DatalagringOskarVidell.Domain.Models.KursTillfallen;
 
-namespace Datalagring_Oskar_Videll.Application.Contracts;
+namespace DatalagringOskarVidell.Application.Contracts;
 
 public interface ILarareRegiRepository
 {

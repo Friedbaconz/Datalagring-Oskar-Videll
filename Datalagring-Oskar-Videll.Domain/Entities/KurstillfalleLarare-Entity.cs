@@ -1,5 +1,5 @@
 ﻿
-namespace Datalagring_Oskar_Videll.Domain.Entities;
+namespace DatalagringOskarVidell.Domain.Entities;
 
 public class KurstillfalleLarare_Entity
 {

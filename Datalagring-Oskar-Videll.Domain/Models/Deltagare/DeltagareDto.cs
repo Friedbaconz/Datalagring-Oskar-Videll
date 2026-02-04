@@ -1,12 +1,13 @@
 ﻿
 
-namespace Datalagring_Oskar_Videll.Domain.Models.Deltagare;
+namespace DatalagringOskarVidell.Domain.Models.Deltagare;
 
 public sealed record DeltagareDto(
-    string Email,
+    Guid Id,
     string Firstname,
     string? Middlename,
     string Lastname,
+    string Email,
     string? Phonenumber
 );
 
