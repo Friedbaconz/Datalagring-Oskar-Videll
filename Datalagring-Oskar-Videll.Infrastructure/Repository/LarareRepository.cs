@@ -51,7 +51,9 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
             throw new ArgumentException("Email cannot be null or empty", nameof(email));
         }
 
-        var entity = _context.Larare.SingleOrDefault(e => e.LarareEmail == email);
+        var entity = await _context.Larare
+            .Where(e => e.LarareEmail == email)
+            .SingleOrDefaultAsync(Ctoken);
 
         if (entity == null)
         {
@@ -93,6 +95,7 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
 
         var Larare = await _context.Larare
             .AsNoTracking()
+            .Where(e => e.LarareEmail == email)
             .Select(e => new LarareDto
             (
                 e.LarareEmail,
@@ -101,7 +104,7 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
                 e.Efternamn,
                 e.Kompentens
             ))
-            .SingleOrDefaultAsync(e => e.Email == email, Ctoken);
+            .SingleOrDefaultAsync(Ctoken);
 
         return Larare is null ? null : Larare;
     }
@@ -113,7 +116,9 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
             throw new ArgumentException("Email cannot be null or empty", nameof(email));
         }
 
-        var entity = await _context.Larare.SingleOrDefaultAsync(e => e.LarareEmail == LarareRequest.Email, Ctoken)
+        var entity = await _context.Larare
+            .Where(e => e.LarareEmail == email)
+            .SingleOrDefaultAsync(Ctoken)
             ?? throw new KeyNotFoundException($"Larare with email {email} not found");
 
         entity.LarareEmail = LarareRequest.Email;
@@ -135,6 +140,6 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
                 e.Efternamn,
                 e.Kompentens
             ))
-            .SingleOrDefaultAsync(e => e.Email == email, Ctoken);
+            .SingleOrDefaultAsync(Ctoken);
     }
 }

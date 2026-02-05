@@ -4,11 +4,41 @@
 POST {{Testing}}/api/Deltagare
 Content-Type: application/json
 {
-         "Email":"Email@a.b",
-         "Firstname":"Testing",
-         "Middlename":"MiddlenameTest",
-         "Lastname":"Lastname",
-         "Phonenumber":"123456789"
+         "Firstname": "Him Doe",
+         "Middlename": "Doe",
+         "Lastname": "Doe",
+         "Email": "look.doe@example.com",
+         "Phonenumber": "123456789"
+}
+
+###
+
+POST {{Testing}}/api/Larare
+Content-Type: application/json
+{
+         "Email" : "Did@doe@exemple.com",
+         "Firstname": "Him Doe",
+         "Middlename": "Doe",
+         "Lastname": "Doe",
+         "Kompentens": "IT"
+}
+
+###
+
+POST {{Testing}}/api/Ort
+Content-Type: application/json
+{
+         "Ortnamn" : "Helsingborg"
+}
+
+###
+
+POST {{Testing}}/api/Kurs
+Content-Type: application/json
+{
+         "Kurskod" : "FF22",
+         "Kursnamn": "IT Höst",
+         "Description": "IT kurs under hösten 202?"
 }
 
 ###

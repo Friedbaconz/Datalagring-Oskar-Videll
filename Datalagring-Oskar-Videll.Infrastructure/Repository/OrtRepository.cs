@@ -41,11 +41,13 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             throw new ArgumentException("OrtId cannot be empty", nameof(ortId));
         }
 
-        var entity = _context.Ort.SingleOrDefault(e => e.OrtId == ortId);
+        var entity = await _context.Ort
+            .Where(e => e.OrtId == ortId)
+            .SingleOrDefaultAsync(Ctoken);
 
         if (entity == null)
         {
-            return false;
+            throw new KeyNotFoundException($"Ort with id {ortId} not found");
         }
 
         _context.Ort.Remove(entity);
@@ -74,7 +76,7 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             throw new ArgumentException("OrtId cannot be empty", nameof(ortId));
         }
 
-        var Ort = _context.Ort
+        var Ort = await _context.Ort
             .AsNoTracking()
             .Where(e => e.OrtId == ortId)
             .Select(e => new OrtDto
@@ -82,7 +84,7 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
                 e.OrtId,
                 e.OrtNamn
             ))
-            .SingleOrDefault();
+            .SingleOrDefaultAsync(Ctoken);
 
         return Ort is null ? null : Ort;
 
@@ -95,11 +97,14 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             throw new ArgumentException("OrtId cannot be empty", nameof(ortId));
         }
 
-        var entity = _context.Ort.SingleOrDefault(e => e.OrtId == ortId)
+        var entity = await _context.Ort
+            .Where(e => e.OrtId == ortId)
+            .SingleOrDefaultAsync(Ctoken)
             ?? throw new KeyNotFoundException($"Ort with Id {ortId} not found.");
 
         entity.OrtId = ortId;
         entity.OrtNamn = OrtRequest.Ortnamn;
+
         await _context.SaveChangesAsync(Ctoken);
 
         return await _context.Ort

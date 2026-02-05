@@ -32,18 +32,20 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
     }
 
 
-    public async Task<bool> DeleteAsync(string email, CancellationToken Ctoken)
+    public async Task<bool> DeleteAsync(Guid Id, CancellationToken Ctoken)
     {
-        if (string.IsNullOrWhiteSpace(email))
+        if (Id == Guid.Empty)
         {
-            throw new ArgumentException("Email cannot be null or empty", nameof(email));
+            throw new ArgumentException("Email cannot be null or empty", nameof(Id));
         }
 
-        var entity = await _context.Deltagare_Entity.SingleOrDefaultAsync(e => e.Email == email, Ctoken);
+        var entity = await _context.Deltagare_Entity
+            .Where(x => x.Id == Id)
+            .SingleOrDefaultAsync(Ctoken);
 
         if (entity == null)
         {
-            throw new KeyNotFoundException($"Deltagare with email {email} not found");
+            throw new KeyNotFoundException($"Deltagare with email {Id} not found");
         }
 
         _context.Deltagare_Entity.Remove(entity);
@@ -73,14 +75,15 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
     }
 
 
-    public async Task<DeltagareDto?> GetByEmailAsync(string email, CancellationToken Ctoken)
+    public async Task<DeltagareDto?> GetByIDAsync(Guid ID, CancellationToken Ctoken)
     {
-     if (string.IsNullOrWhiteSpace(email))
+     if (ID == Guid.Empty)
         {
-            throw new ArgumentException("Email cannot be null or empty", nameof(email));
+            throw new ArgumentException("Email cannot be null or empty", nameof(ID));
         }
         var deltagare = await _context.Deltagare_Entity
             .AsNoTracking()
+            .Where(e => e.Id == ID)
             .Select(e => new DeltagareDto
             (
                 e.Id,
@@ -90,7 +93,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
                 e.Email,
                 e.Telefonnummer
             ))
-            .SingleOrDefaultAsync(e => e.Email == email, Ctoken);
+            .SingleOrDefaultAsync(Ctoken);
         return deltagare is null ? null : deltagare;
     }
 
@@ -123,6 +126,6 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
                 e.Email,
                 e.Telefonnummer
             ))
-            .SingleOrDefaultAsync(e => e.Email == email, Ctoken);
+            .SingleOrDefaultAsync(Ctoken);
     }
 }

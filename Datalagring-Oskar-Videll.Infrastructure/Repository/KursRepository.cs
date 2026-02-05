@@ -15,8 +15,9 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
     {
         var entity = new Domain.Entities.Kurs_Entity
         {
+            Kurskod = KursRequest.Kurskod,
             Kursnamn = KursRequest.KursNamn,
-            Beskrivning = KursRequest.description
+            Beskrivning = KursRequest.Description
         };
 
         try
@@ -43,7 +44,9 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
             throw new ArgumentException("Kurskod cannot be null or empty", nameof(Kurskod));
         }
 
-        var entity = _context.Kurs.SingleOrDefault(e => e.Kurskod == Kurskod);
+        var entity = await _context.Kurs
+            .Where(e => e.Kurskod == Kurskod)
+            .SingleOrDefaultAsync(Ctoken);
 
         if (entity == null)
         {
@@ -79,13 +82,14 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
 
         var entity = await _context.Kurs
             .AsNoTracking()
+            .Where(e => e.Kurskod == Kurskod)
             .Select(e => new KursDto
             (
                 e.Kurskod,
                 e.Kursnamn,
                 e.Beskrivning
             ))
-            .SingleOrDefaultAsync(e => e.KursId == Kurskod, Ctoken);
+            .SingleOrDefaultAsync(Ctoken);
 
         return entity is null ? null : entity;
     }
@@ -97,11 +101,15 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
             throw new ArgumentException("Kurskod cannot be null or empty", nameof(Kurskod));
         }
 
-        var entity = await _context.Kurs.SingleOrDefaultAsync(e => e.Kurskod == Kurskod, Ctoken)
+        var entity = await _context.Kurs
+            .Where(e => e.Kurskod == Kurskod)
+            .SingleOrDefaultAsync(Ctoken)
             ?? throw new KeyNotFoundException($"Course with Kurskod '{Kurskod}' not found.");
 
+        entity.Kurskod = KursRequest.Kurskod;
         entity.Kursnamn = KursRequest.KursNamn;
         entity.Beskrivning = KursRequest.Description;
+
         await _context.SaveChangesAsync(Ctoken);
         
 
