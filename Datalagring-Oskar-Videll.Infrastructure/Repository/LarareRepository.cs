@@ -18,7 +18,7 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
     {
         var entity = new Larare_Entity
         {
-            LarareEmail = LarareRequest.Email,
+            Email = LarareRequest.Email,
             Fornamn = LarareRequest.Firstname,
             Mellannamn = LarareRequest.Middlename!,
             Efternamn = LarareRequest.Lastname,
@@ -30,11 +30,13 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
             _context.Larare.Add(entity);
             await _context.SaveChangesAsync(Ctoken);
 
-            return new LarareDto(entity.LarareEmail,
+            return new LarareDto(entity.Email,
                                  entity.Fornamn,
                                  entity.Mellannamn,
                                  entity.Efternamn,
-                                 entity.Kompentens);
+                                 entity.Kompentens,
+                                 entity.KurstillfalleLarare
+                                 );
 
         }
         catch (Exception ex)
@@ -52,7 +54,7 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
         }
 
         var entity = await _context.Larare
-            .Where(e => e.LarareEmail == email)
+            .Where(e => e.Email == email)
             .SingleOrDefaultAsync(Ctoken);
 
         if (entity == null)
@@ -74,11 +76,12 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
             .ThenBy(e => e.Fornamn)
             .Select(e => new LarareDto
             (
-                e.LarareEmail,
+                e.Email,
                 e.Fornamn,
                 e.Mellannamn,
                 e.Efternamn,
-                e.Kompentens
+                e.Kompentens,
+                e.KurstillfalleLarare
             ))
             .ToListAsync(Ctoken);
 
@@ -95,14 +98,15 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
 
         var Larare = await _context.Larare
             .AsNoTracking()
-            .Where(e => e.LarareEmail == email)
+            .Where(e => e.Email == email)
             .Select(e => new LarareDto
             (
-                e.LarareEmail,
+                e.Email,
                 e.Fornamn,
                 e.Mellannamn,
                 e.Efternamn,
-                e.Kompentens
+                e.Kompentens,
+                e.KurstillfalleLarare
             ))
             .SingleOrDefaultAsync(Ctoken);
 
@@ -117,11 +121,11 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
         }
 
         var entity = await _context.Larare
-            .Where(e => e.LarareEmail == email)
+            .Where(e => e.Email == email)
             .SingleOrDefaultAsync(Ctoken)
             ?? throw new KeyNotFoundException($"Larare with email {email} not found");
 
-        entity.LarareEmail = LarareRequest.Email;
+        entity.Email = LarareRequest.Email;
         entity.Fornamn = LarareRequest.Firstname;
         entity.Mellannamn = LarareRequest.Middlename!;
         entity.Efternamn = LarareRequest.Lastname;
@@ -131,14 +135,15 @@ public class LarareRepository(DeltagareDBContext context) : ILarareRepository
 
         return await _context.Larare
             .AsNoTracking()
-            .Where(e => e.LarareEmail == email)
+            .Where(e => e.Email == email)
             .Select(e => new LarareDto
             (
-                e.LarareEmail,
+                e.Email,
                 e.Fornamn,
                 e.Mellannamn,
                 e.Efternamn,
-                e.Kompentens
+                e.Kompentens,
+                e.KurstillfalleLarare
             ))
             .SingleOrDefaultAsync(Ctoken);
     }

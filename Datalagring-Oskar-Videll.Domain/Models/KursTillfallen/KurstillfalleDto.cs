@@ -10,14 +10,16 @@ public sealed record KurstillfalleDto(
 
     string KursKod,
 
+    Kurs_Entity Kurs,
+
     DateTime Startdatum,
 
     DateTime Slutdatum,
 
     int Maxseats,
 
-    string LarareEmail,
+    int Ortid,
 
-    Guid Ortid
+    Ort_Entity Ort
  );
 

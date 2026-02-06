@@ -1,9 +1,12 @@
 ﻿
+using Dapper;
 using DatalagringOskarVidell.Application.Contracts;
 using DatalagringOskarVidell.Domain.Entities;
 using DatalagringOskarVidell.Domain.Models.KursTillfallen;
+using DatalagringOskarVidell.Domain.Models.Larare;
 using DatalagringOskarVidell.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using static Dapper.SqlMapper;
 
 namespace DatalagringOskarVidell.Infrastructure.Repository;
 
@@ -11,36 +14,37 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
 {
     private readonly DeltagareDBContext _context = context;
 
-    public async Task<KurstillfalleDto> CreateAsync(CreateKurstillfalleDto KurstillfalleRequest, CancellationToken Ctoken)
+    public async Task<KurstillfalleDto?> CreateAsync(CreateKurstillfalleDto KurstillfalleRequest, CancellationToken Ctoken)
     {
         var entity = new Kurstillfalle_Entity
         {
+            ID = Guid.NewGuid(),
+            KursKodID = KurstillfalleRequest.Kurskod,
             Startdatum = KurstillfalleRequest.Startdatum,
             Slutdatum = KurstillfalleRequest.Slutdatum,
             MaxSeats = KurstillfalleRequest.Maxseats,
+            Kurs = _context.Kurs.FirstOrDefault(e => e.Kurskod == KurstillfalleRequest.Kurskod),
+            Ortid = KurstillfalleRequest.OrtId,
+            Ort = _context.Ort.FirstOrDefault(e => e.OrtId == KurstillfalleRequest.OrtId),
         };
 
-        try 
-        {
-            _context.KursTillfalle.Add(entity);
-            await _context.SaveChangesAsync(Ctoken);
+        _context.KursTillfalle.Add(entity);
+        await _context.SaveChangesAsync(Ctoken);
 
-            return new KurstillfalleDto
-            (
-                entity.KursTillfallenId,
-                entity.KursKod,
+        return await _context.KursTillfalle
+            .AsNoTracking()
+            .Where(e => e.ID == entity.ID)
+            .Select(entity => new KurstillfalleDto(
+                entity.ID,
+                entity.Kurs.Kurskod,
+                entity.Kurs,
                 entity.Startdatum,
                 entity.Slutdatum,
                 entity.MaxSeats,
-                entity.LarareEmail,
-                entity.Ortid
-            );
-
-        }
-        catch (Exception ex)
-        {
-            throw new ApplicationException("An error occurred while creating the Kurstillfalle.", ex);
-        }
+                entity.Ort.OrtId,
+                entity.Ort
+                ))
+            .SingleOrDefaultAsync(Ctoken);
     }
 
     public async Task<bool> DeleteAsync(Guid kursTillfallenId, CancellationToken Ctoken)
@@ -50,7 +54,7 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
             throw new ArgumentException("kursTillfallenId cannot be empty", nameof(kursTillfallenId));
         }
 
-        var entity = _context.KursTillfalle.SingleOrDefault(e => e.KursTillfallenId == kursTillfallenId);
+        var entity = await _context.KursTillfalle.Where(e => e.ID == kursTillfallenId).SingleOrDefaultAsync(Ctoken);
 
         if (entity == null)
         {
@@ -66,16 +70,16 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
     {
         var entities = await _context.KursTillfalle
             .AsNoTracking()
-            .Select(entity => new KurstillfalleDto
-            (
-                entity.KursTillfallenId,
-                entity.KursKod,
+            .Select(entity => new KurstillfalleDto(
+                entity.ID,
+                entity.Kurs.Kurskod,
+                entity.Kurs,
                 entity.Startdatum,
                 entity.Slutdatum,
                 entity.MaxSeats,
-                entity.LarareEmail,
-                entity.Ortid
-            ))
+                entity.Ort.OrtId,
+                entity.Ort
+                ))
             .ToListAsync(Ctoken);
 
         return entities;
@@ -90,17 +94,18 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
 
         var kurstillfalle = await _context.KursTillfalle
             .AsNoTracking()
-            .Select(entity => new KurstillfalleDto
-            (
-                entity.KursTillfallenId,
-                entity.KursKod,
+            .Where(e => e.ID == kursTillfallenId)
+            .Select(entity => new KurstillfalleDto(
+                entity.ID,
+                entity.Kurs.Kurskod,
+                entity.Kurs,
                 entity.Startdatum,
                 entity.Slutdatum,
                 entity.MaxSeats,
-                entity.LarareEmail,
-                entity.Ortid
-            ))
-            .SingleOrDefaultAsync(e => e.KursTillfallenId == kursTillfallenId, Ctoken);
+                entity.Ort.OrtId,
+                entity.Ort
+                ))
+            .SingleOrDefaultAsync(Ctoken);
 
         return kurstillfalle is null ? null : kurstillfalle;
     }
@@ -112,31 +117,30 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
             throw new ArgumentException("kursTillfallenId cannot be empty", nameof(kursTillfallenId));
         }
 
-        var entity = _context.KursTillfalle.SingleOrDefault(e => e.KursTillfallenId == kursTillfallenId)
+        var entity = _context.KursTillfalle.SingleOrDefault(e => e.ID == kursTillfallenId)
             ?? throw new KeyNotFoundException($"Kurstillfalle with ID {kursTillfallenId} not found.");
 
-        entity.KursTillfallenId = KurstillfalleRequest.KursTillfallenId;
-        entity.KursKod = KurstillfalleRequest.KursKod;
         entity.Startdatum = KurstillfalleRequest.Startdatum;
         entity.Slutdatum = KurstillfalleRequest.Slutdatum;
         entity.MaxSeats = KurstillfalleRequest.Maxseats;
-        entity.Ortid = KurstillfalleRequest.Ortid;
+        
 
         await _context.SaveChangesAsync(Ctoken);
 
         return await _context.KursTillfalle
             .AsNoTracking()
-            .Select(entity => new KurstillfalleDto
-            (
-                entity.KursTillfallenId,
-                entity.KursKod,
+            .Where(e => e.ID == kursTillfallenId)
+            .Select(entity => new KurstillfalleDto(
+                entity.ID,
+                entity.Kurs.Kurskod,
+                entity.Kurs,
                 entity.Startdatum,
                 entity.Slutdatum,
                 entity.MaxSeats,
-                entity.LarareEmail,
-                entity.Ortid
-            ))
-            .SingleOrDefaultAsync(e => e.KursTillfallenId == kursTillfallenId, Ctoken);
+                entity.Ort.OrtId,
+                entity.Ort
+                ))
+            .SingleOrDefaultAsync(Ctoken);
 
 
 

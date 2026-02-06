@@ -1,4 +1,6 @@
 ﻿
+using DatalagringOskarVidell.Domain.Entities;
+
 namespace DatalagringOskarVidell.Domain.Models.Larare;
 
 public sealed record UpdateLarareDto(
@@ -6,5 +8,6 @@ public sealed record UpdateLarareDto(
     string Firstname,
     string? Middlename,
     string Lastname,
-    string Kompentens
+    string Kompentens,
+    ICollection<KurstillfalleLarare_Entity> Tillfallen
 );

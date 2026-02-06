@@ -1,5 +1,7 @@
 ﻿
 
+using DatalagringOskarVidell.Domain.Entities;
+
 namespace DatalagringOskarVidell.Domain.Models.Deltagare;
 
 public sealed record UpdateDeltagareDto(
@@ -8,5 +10,6 @@ public sealed record UpdateDeltagareDto(
     string? Middlename,
     string Lastname,
     string Email,
-    string? Phonenumber
+    string? Phonenumber,
+    ICollection<KursRegi_Entity> Antagnakurser
 );

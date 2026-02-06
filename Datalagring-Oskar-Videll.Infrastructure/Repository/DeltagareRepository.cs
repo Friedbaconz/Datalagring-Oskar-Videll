@@ -16,6 +16,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
 
         var Entity = new DeltagareEntity
         {
+            ID = Guid.NewGuid(),
             Fornamn = DeltagareRequest.Firstname,
             Mellannamn = DeltagareRequest.Middlename,
             Efternamn = DeltagareRequest.Lastname,
@@ -27,7 +28,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
             _context.Deltagare_Entity.Add(Entity);
             await _context.SaveChangesAsync(Ctoken);
 
-            return new DeltagareDto(Entity.Id, Entity.Fornamn, Entity.Mellannamn, Entity.Efternamn, Entity.Email, Entity.Telefonnummer);
+            return new DeltagareDto(Entity.ID, Entity.Fornamn, Entity.Mellannamn, Entity.Efternamn, Entity.Email, Entity.Telefonnummer, Entity.Kursregi);
 
     }
 
@@ -40,7 +41,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
         }
 
         var entity = await _context.Deltagare_Entity
-            .Where(x => x.Id == Id)
+            .Where(x => x.ID == Id)
             .SingleOrDefaultAsync(Ctoken);
 
         if (entity == null)
@@ -62,12 +63,13 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
             .ThenBy(e => e.Fornamn)
             .Select(e => new DeltagareDto
             (
-                e.Id,
+                e.ID,
                 e.Fornamn,
                 e.Mellannamn,
                 e.Efternamn,
                 e.Email,
-                e.Telefonnummer
+                e.Telefonnummer,
+                e.Kursregi
             ))
             .ToListAsync(Ctoken);
 
@@ -83,15 +85,16 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
         }
         var deltagare = await _context.Deltagare_Entity
             .AsNoTracking()
-            .Where(e => e.Id == ID)
+            .Where(e => e.ID == ID)
             .Select(e => new DeltagareDto
             (
-                e.Id,
+                e.ID,
                 e.Fornamn,
                 e.Mellannamn,
                 e.Efternamn,
                 e.Email,
-                e.Telefonnummer
+                e.Telefonnummer,
+                e.Kursregi
             ))
             .SingleOrDefaultAsync(Ctoken);
         return deltagare is null ? null : deltagare;
@@ -119,12 +122,13 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
             .Where(e => e.Email == email)
             .Select(e => new DeltagareDto
             (
-                e.Id,
+                e.ID,
                 e.Fornamn,
                 e.Mellannamn,
                 e.Efternamn,
                 e.Email,
-                e.Telefonnummer
+                e.Telefonnummer,
+                e.Kursregi
             ))
             .SingleOrDefaultAsync(Ctoken);
     }

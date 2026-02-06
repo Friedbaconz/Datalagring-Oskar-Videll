@@ -1,6 +1,7 @@
 ﻿
 
 using DatalagringOskarVidell.Application.Contracts;
+using DatalagringOskarVidell.Domain.Entities;
 using DatalagringOskarVidell.Domain.Models.Kurs;
 using DatalagringOskarVidell.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +14,7 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
 
     public async Task<KursDto> CreateAsync(CreateKursDto KursRequest, CancellationToken Ctoken)
     {
-        var entity = new Domain.Entities.Kurs_Entity
+        var entity = new Kurs_Entity
         {
             Kurskod = KursRequest.Kurskod,
             Kursnamn = KursRequest.KursNamn,
@@ -28,7 +29,8 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
             (
                 entity.Kurskod,
                 entity.Kursnamn,
-                entity.Beskrivning
+                entity.Beskrivning,
+                entity.Kurstillfallen
             );
         }
         catch (Exception ex)
@@ -66,7 +68,8 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
             (
                 e.Kurskod,
                 e.Kursnamn,
-                e.Beskrivning
+                e.Beskrivning,
+                e.Kurstillfallen
             ))
             .ToListAsync(Ctoken);
 
@@ -87,7 +90,8 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
             (
                 e.Kurskod,
                 e.Kursnamn,
-                e.Beskrivning
+                e.Beskrivning,
+                e.Kurstillfallen
             ))
             .SingleOrDefaultAsync(Ctoken);
 
@@ -109,6 +113,7 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
         entity.Kurskod = KursRequest.Kurskod;
         entity.Kursnamn = KursRequest.KursNamn;
         entity.Beskrivning = KursRequest.Description;
+        entity.Kurstillfallen = await _context.KursTillfalle.Where(e => e.KursKodID == KursRequest.Kurskod).ToListAsync(Ctoken);
 
         await _context.SaveChangesAsync(Ctoken);
         
@@ -120,7 +125,8 @@ public class KursRepository(DeltagareDBContext context) : IKursRepository
             (
                 e.Kurskod,
                 e.Kursnamn,
-                e.Beskrivning
+                e.Beskrivning,
+                e.Kurstillfallen
             ))
             .SingleOrDefaultAsync(Ctoken);
     }

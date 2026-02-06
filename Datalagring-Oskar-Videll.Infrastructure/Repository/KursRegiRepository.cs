@@ -4,6 +4,7 @@ using DatalagringOskarVidell.Domain.Entities;
 using DatalagringOskarVidell.Domain.Models.KursRegi;
 using DatalagringOskarVidell.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using static Dapper.SqlMapper;
 
 namespace DatalagringOskarVidell.Infrastructure.Repository;
 
@@ -15,6 +16,8 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
     {
         var entity = new KursRegi_Entity
         {
+            Antagen = KursRegiRequest.Antagen,
+            ID = KursRegiRequest.KursRegiId,
             status = KursRegiRequest.Status,
             RegiDatum = KursRegiRequest.RegistrationDate
         };
@@ -26,10 +29,12 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
             return new KursRegiDto
             (
 
-                entity.KursRegiId,
-                entity.DeltagareEmail,
+                entity.ID,
+                entity.Antagen,
                 entity.RegiDatum,
-                entity.status
+                entity.status,
+                entity.DeltagareRegi,
+                entity.Kurstillfallen
             );
 
         }
@@ -39,14 +44,14 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
         }
     }
 
-    public async Task<bool> DeleteAsync(Guid Id, CancellationToken Ctoken)
+    public async Task<bool> DeleteAsync(int Id, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
 
-        var entity = await _context.KursRegi.SingleOrDefaultAsync(e => e.KursRegiId == Id, Ctoken);
+        var entity = await _context.KursRegi.SingleOrDefaultAsync(e => e.ID == Id, Ctoken);
 
         if (entity == null)
         {
@@ -64,44 +69,48 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
             AsNoTracking().
             Select(e => new KursRegiDto
             (
-                e.KursRegiId,
-                e.DeltagareEmail,
+                e.ID,
+                e.Antagen,
                 e.RegiDatum,
-                e.status
+                e.status,
+                e.DeltagareRegi,
+                e.Kurstillfallen
             )).
             ToListAsync(Ctoken);
 
         return entities;
     }
 
-    public async Task<KursRegiDto?> GetByIDAsync(Guid Id, CancellationToken Ctoken)
+    public async Task<KursRegiDto?> GetByIDAsync(int Id, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
 
         var entity = await _context.KursRegi.
             AsNoTracking().
-            Where(e => e.KursRegiId == Id).
+            Where(e => e.ID == Id).
             Select(e => new KursRegiDto
             (
-                e.KursRegiId,
-                e.DeltagareEmail,
+                e.ID,
+                e.Antagen,
                 e.RegiDatum,
-                e.status
+                e.status,
+                e.DeltagareRegi,
+                e.Kurstillfallen
             )).
             SingleOrDefaultAsync(Ctoken);
 
         return entity is null ? null : entity;
     }
 
-    public async Task<KursRegiDto?> UpdateAsync(Guid Id, UpdateKursRegiDto KursRequest, CancellationToken Ctoken)
+    public async Task<KursRegiDto?> UpdateAsync(int Id, UpdateKursRegiDto KursRequest, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty) {
+        if (Id == 0) {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
-        var entity = await _context.KursRegi.SingleOrDefaultAsync(e => e.KursRegiId == Id, Ctoken)
+        var entity = await _context.KursRegi.SingleOrDefaultAsync(e => e.ID == Id, Ctoken)
             ?? throw new Exception("KursRegi not found");
 
         entity.status = KursRequest.Status;
@@ -111,13 +120,15 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
 
         return await _context.KursRegi.
             AsNoTracking().
-            Where(e => e.KursRegiId == Id).
+            Where(e => e.ID == Id).
             Select(e => new KursRegiDto
             (
-                e.KursRegiId,
-                e.DeltagareEmail,
+                e.ID,
+                e.Antagen,
                 e.RegiDatum,
-                e.status
+                e.status,
+                e.DeltagareRegi,
+                e.Kurstillfallen
             )).
             SingleOrDefaultAsync(Ctoken);
 

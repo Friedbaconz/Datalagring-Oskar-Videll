@@ -1,13 +1,16 @@
-using Microsoft.EntityFrameworkCore;
-using DatalagringOskarVidell.Infrastructure.Repository;
-using DatalagringOskarVidell.Domain.Models.Ort;
-using DatalagringOskarVidell.Domain.Models.Deltagare;
-using DatalagringOskarVidell.Infrastructure.Data;
 using DatalagringOskarVidell.Application.Contracts;
-using System.Net.Mail;
 using DatalagringOskarVidell.Domain.Entities;
-using DatalagringOskarVidell.Domain.Models.Larare;
+using DatalagringOskarVidell.Domain.Models.Deltagare;
 using DatalagringOskarVidell.Domain.Models.Kurs;
+using DatalagringOskarVidell.Domain.Models.KursRegi;
+using DatalagringOskarVidell.Domain.Models.KursTillfallen;
+using DatalagringOskarVidell.Domain.Models.Larare;
+using DatalagringOskarVidell.Domain.Models.Ort;
+using DatalagringOskarVidell.Infrastructure.Data;
+using DatalagringOskarVidell.Infrastructure.Repository;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,9 @@ builder.Services.AddScoped<IOrtRepository, OrtRepository>();
 
 builder.Services.AddScoped<IKursRepository, KursRepository>();
 
+builder.Services.AddScoped<IKursTillfalleRepository, KurstillfalleRepository>();
+
+builder.Services.AddScoped<IKursRegiRepository, KursRegiRepository>();
 
 
 var app = builder.Build();
@@ -62,7 +68,7 @@ app.MapGet("/api/Deltagare/{id:guid}", async (Guid ID, IDeltagareRepository delt
 
 app.MapPut("/api/Deltagare/{email}", async (string email, UpdateDeltagareDto req, IDeltagareRepository deltagareOptions, CancellationToken Ctoken) =>
 {
-    var dto = new UpdateDeltagareDto(req.Id, req.Firstname, req.Middlename, req.Lastname, req.Email, req.Phonenumber);
+    var dto = new UpdateDeltagareDto(req.Id, req.Firstname, req.Middlename, req.Lastname, req.Email, req.Phonenumber, req.Antagnakurser);
 
     var deltagare = await deltagareOptions.UpdateAsync(email, dto, Ctoken);
 
@@ -106,7 +112,7 @@ app.MapGet("/api/Larare/{email}", async (string email, ILarareRepository larareO
 
 app.MapPut("/api/Larare/{email}", async(string email, UpdateLarareDto req, ILarareRepository larareOptions, CancellationToken Ctoken) =>
 {
-    var dto = new UpdateLarareDto(req.Email, req.Firstname, req.Middlename, req.Lastname, req.Kompentens);
+    var dto = new UpdateLarareDto(req.Email, req.Firstname, req.Middlename, req.Lastname, req.Kompentens, req.Tillfallen);
 
     var larare = await larareOptions.UpdateAsync(email, dto, Ctoken);
 
@@ -144,7 +150,7 @@ app.MapGet("/api/Ort/", async (IOrtRepository ortOptions, CancellationToken Ctok
     return Results.Ok(Ort);
 });
 
-app.MapGet("/api/Ort/{id:guid}", async (Guid id, IOrtRepository ortOptions, CancellationToken Ctoken) =>
+app.MapGet("/api/Ort/{id:int}", async (int id, IOrtRepository ortOptions, CancellationToken Ctoken) =>
 {
     var Ort = await ortOptions.GetByIdAsync(id, Ctoken);
 
@@ -152,9 +158,9 @@ app.MapGet("/api/Ort/{id:guid}", async (Guid id, IOrtRepository ortOptions, Canc
 });
 
 
-app.MapPut("/api/Ort/{id:guid}", async (Guid id, UpdateOrtDto req, IOrtRepository ortOptions, CancellationToken Ctoken) =>
+app.MapPut("/api/Ort/{id:int}", async (int id, UpdateOrtDto req, IOrtRepository ortOptions, CancellationToken Ctoken) =>
 {
-    var dto = new UpdateOrtDto(req.Ortid, req.Ortnamn);
+    var dto = new UpdateOrtDto(req.Ortid, req.Ortnamn, req.KursTillfalle);
 
     var Ort = await ortOptions.UpdateAsync(id, dto, Ctoken);
 
@@ -163,7 +169,7 @@ app.MapPut("/api/Ort/{id:guid}", async (Guid id, UpdateOrtDto req, IOrtRepositor
         : Results.NotFound();
 });
 
-app.MapDelete("/api/Ort/{id:guid}", async (Guid id, IOrtRepository ortOptions, CancellationToken Ctoken) =>
+app.MapDelete("/api/Ort/{id:int}", async (int id, IOrtRepository ortOptions, CancellationToken Ctoken) =>
 {
     var deleted = await ortOptions.DeleteAsync(id, Ctoken);
     return deleted
@@ -199,7 +205,7 @@ app.MapGet("/api/Kurs/{Kurskod}", async (string kurskod, IKursRepository kursOpt
 
 app.MapPut("/api/Kurs/{Kurskod}", async (string kurskod, UpdateKursDto req, IKursRepository kursOptions, CancellationToken Ctoken) =>
 {
-    var dto = new UpdateKursDto(req.Kurskod, req.KursNamn, req.Description);
+    var dto = new UpdateKursDto(req.Kurskod, req.KursNamn, req.Description, req.Kurstillfalle);
 
     var Kurs = await kursOptions.UpdateAsync(kurskod, dto, Ctoken);
 
@@ -218,6 +224,66 @@ app.MapDelete("/api/Kurs/{Kurskod}", async (string kurskod, IKursRepository kurs
 
 //KursTillfallen
 
+app.MapPost("/api/Kurstillfalle", async (CreateKurstillfalleDto req, IKursTillfalleRepository tillfalleOptions, CancellationToken Ctoken) =>
+{
+    var dto = new CreateKurstillfalleDto(req.Kurskod, req.Startdatum, req.Slutdatum, req.Maxseats, req.OrtId);
+
+    var Tillfalle = await tillfalleOptions.CreateAsync(dto, Ctoken);
+
+    return Results.Created($"/api/Kurstillfalle/{Tillfalle.KursTillfallenId}", Tillfalle);
+});
+
+
+app.MapGet("/api/Kurstillfalle/", async (IKursTillfalleRepository tillfalleOptions, CancellationToken Ctoken) =>
+{
+    var Tillfalle = await tillfalleOptions.GetAllAsync(Ctoken);
+
+    return Results.Ok(Tillfalle);
+});
+
+app.MapGet("/api/Kurstillfalle/{KursTillfallenId:guid}", async (Guid KursTillfallenId, IKursTillfalleRepository tillfalleOptions, CancellationToken Ctoken) =>
+{
+    var Tillfalle = await tillfalleOptions.GetByIdAsync(KursTillfallenId, Ctoken);
+
+    return Tillfalle is null ? null : Tillfalle;
+});
+
+app.MapPut("/api/Kurstillfalle/{KursTillfallenId:guid}", async (Guid KursTillfallenId, UpdateKurstillfalleDto req,IKursTillfalleRepository tillfalleOptions, CancellationToken Ctoken) =>
+{
+    var dto = new UpdateKurstillfalleDto(req.KursTillfallenId, req.KursKod, req.Kurs, req.Startdatum, req.Slutdatum, req.Maxseats, req.Ortid, req.Ort);
+
+    var Tillfalle = await tillfalleOptions.UpdateAsync(KursTillfallenId, dto, Ctoken);
+
+    return Tillfalle is not null
+        ? Results.Ok(Tillfalle)
+        : Results.NotFound();
+});
+
+app.MapDelete("/api/Kurstillfalle/{KursTillfallenId:guid}", async (Guid KursTillfallenId, IKursTillfalleRepository tillfalleOptions, CancellationToken Ctoken) =>
+{
+    var deleted = await tillfalleOptions.DeleteAsync(KursTillfallenId, Ctoken);
+    return deleted
+        ? Results.Ok()
+        : Results.NotFound();
+});
+
+//KursRegi
+
+app.MapPost("/api/KursRegi", async (CreateKursRegiDto req, IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
+{
+    var dto = new CreateKursRegiDto(req.KursRegiId, req.Antagen, req.RegistrationDate, req.Status);
+
+    var Regi = await RegiOptions.CreateAsync(dto, Ctoken);
+
+    return Results.Created($"/api/KursRegi/{Regi.KursRegiId}", Regi);
+});
+
+app.MapGet("/api/KursRegi/", async (IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
+{
+    var Regi = await RegiOptions.GetAllAsync(Ctoken);
+
+    return Results.Ok(Regi);
+});
 
 
 app.Run();

@@ -3,19 +3,21 @@ namespace DatalagringOskarVidell.Domain.Entities;
 
 public class Kurstillfalle_Entity
 {
-    public Guid KursTillfallenId { get; set; }
-    public ICollection<KursRegi_Entity> KursRegi = [];
+    public Guid ID { get; set; }
 
-    public string KursKod { get; set; } = null!;
+    public string KursKodID { get; set; } = null!;
     public Kurs_Entity Kurs { get; set; } = null!;
 
     public int MaxSeats { get; set; }
     public DateTime Startdatum { get; set; }
     public DateTime Slutdatum { get; set; }
 
-    public Guid Ortid { get; set; }
+    public int Ortid { get; set; }
+
     public Ort_Entity Ort = null!;
 
-    public string LarareEmail { get; set; } = null!;
+
+    public ICollection<KursRegi_Entity> KursRegi = [];
+
     public ICollection<KurstillfalleLarare_Entity> KursTillfallenLarare = [];
 }

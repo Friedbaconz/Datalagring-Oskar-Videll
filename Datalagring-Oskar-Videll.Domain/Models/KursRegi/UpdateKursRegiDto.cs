@@ -1,11 +1,15 @@
 ﻿
 
+using DatalagringOskarVidell.Domain.Entities;
+
 namespace DatalagringOskarVidell.Domain.Models.KursRegi;
 
 public sealed record UpdateKursRegiDto(
-    
-    Guid KursRegiId,
-    Guid StudentEmail,
+
+    int KursRegiId,
+    int Antagen,
     DateTime RegistrationDate,
-    string Status
+    string Status,
+    ICollection<DeltagareEntity> DeltagareRegi,
+    ICollection<Kurstillfalle_Entity> Kurstillfallen
 );

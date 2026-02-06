@@ -17,7 +17,8 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
     {
         var entity = new KurstillfalleLarare_Entity
             {
-            LarareEmail = LarareRegiRequest.LarareEmail
+            Larare = LarareRegiRequest.LarareEmail,
+            ID = LarareRegiRequest.LarareRegiId
             };
 
         try
@@ -27,8 +28,10 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
 
             return new LarareRegiDto
             (
-                entity.KursTillfallenId,
-                entity.LarareEmail
+                entity.ID,
+                entity.Larare,
+                entity.LarareRegi,
+                entity.Kurstillfallen
             );
         }
         catch (Exception ex)
@@ -40,14 +43,14 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
 
     }
 
-    public async Task<bool> DeleteAsync(Guid Id, CancellationToken Ctoken)
+    public async Task<bool> DeleteAsync(int Id, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
 
-        var entity = await _Context.Larare_Kurstillfalle.SingleOrDefaultAsync(e => e.KursTillfallenId == Id, Ctoken);
+        var entity = await _Context.Larare_Kurstillfalle.SingleOrDefaultAsync(e => e.ID == Id, Ctoken);
 
         if (entity == null)
         {
@@ -66,17 +69,19 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
             .AsNoTracking()
             .Select(entity => new LarareRegiDto
             (
-                entity.KursTillfallenId,
-                entity.LarareEmail
+                entity.ID,
+                entity.Larare,
+                entity.LarareRegi,
+                entity.Kurstillfallen
             ))
             .ToListAsync(Ctoken);
 
         return entities;
     }
 
-    public async Task<LarareRegiDto?> GetByIdAsync(Guid Id, CancellationToken Ctoken)
+    public async Task<LarareRegiDto?> GetByIdAsync(int Id, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
@@ -85,25 +90,28 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
             .AsNoTracking()
             .Select(e => new LarareRegiDto
             (
-                e.KursTillfallenId,
-                e.LarareEmail
+                e.ID,
+                e.Larare,
+                e.LarareRegi,
+                e.Kurstillfallen
             ))
             .SingleOrDefaultAsync(e => e.LarareRegiId == Id, Ctoken);
 
         return entity is null ? null : entity;
     }
 
-    public async Task<LarareRegiDto?> UpdateAsync(Guid Id, UpdateLarareRegiDto KurstillfalleRequest, CancellationToken Ctoken)
+    public async Task<LarareRegiDto?> UpdateAsync(int Id, UpdateLarareRegiDto KurstillfalleRequest, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
 
-        var entity = await _Context.Larare_Kurstillfalle.SingleOrDefaultAsync(e => e.KursTillfallenId == Id, Ctoken)
+        var entity = await _Context.Larare_Kurstillfalle.SingleOrDefaultAsync(e => e.ID == Id, Ctoken)
             ?? throw new KeyNotFoundException($"LarareRegi with Id {Id} not found.");
 
-        entity.LarareEmail = KurstillfalleRequest.LarareEmail;
+        entity.Larare = KurstillfalleRequest.LarareEmail;
+        entity.ID = KurstillfalleRequest.LarareRegiId;
 
         await _Context.SaveChangesAsync(Ctoken);
 
@@ -111,8 +119,10 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
             .AsNoTracking()
             .Select(e => new LarareRegiDto
             (
-                e.KursTillfallenId,
-                e.LarareEmail
+                e.ID,
+                e.Larare,
+                e.LarareRegi,
+                e.Kurstillfallen
             ))
             .SingleOrDefaultAsync(e => e.LarareRegiId == Id, Ctoken);
 

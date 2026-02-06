@@ -5,6 +5,8 @@ using System.Text;
 namespace DatalagringOskarVidell.Domain.Models.KursRegi;
 
 public sealed record CreateKursRegiDto(
+    int KursRegiId,
+    int Antagen,
     DateTime RegistrationDate,
     string Status
 );

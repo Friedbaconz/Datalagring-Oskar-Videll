@@ -22,9 +22,24 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("AntagenKurs", b =>
+                {
+                    b.Property<Guid>("DeltagareID")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("KursRegiID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("DeltagareID", "KursRegiID");
+
+                    b.HasIndex("KursRegiID");
+
+                    b.ToTable("AtagnaKurser", (string)null);
+                });
+
             modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.DeltagareEntity", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
@@ -52,8 +67,8 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                         .IsUnicode(false)
                         .HasColumnType("character varying(13)");
 
-                    b.HasKey("Id")
-                        .HasName("PK_Deltagare_id");
+                    b.HasKey("ID")
+                        .HasName("PK_Deltagare_ID");
 
                     b.HasIndex(new[] { "Email" }, "UQ_Deltagare_Email")
                         .IsUnique();
@@ -66,30 +81,25 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 
             modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.KursRegi_Entity", b =>
                 {
-                    b.Property<Guid>("KursRegiId")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("DeltagareEmail")
-                        .HasMaxLength(255)
-                        .HasColumnType("uuid");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<string>("Kurs_EntityKurskod")
-                        .HasColumnType("character varying(50)");
+                    b.Property<int>("Antagen")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("RegiDatum")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("status")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.HasKey("KursRegiId")
-                        .HasName("PK_KursRegi_KursRegiId");
-
-                    b.HasIndex("DeltagareEmail");
-
-                    b.HasIndex("Kurs_EntityKurskod");
+                    b.HasKey("ID")
+                        .HasName("PK_KursRegi_ID");
 
                     b.ToTable("KursRegi", (string)null);
                 });
@@ -121,39 +131,39 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 
             modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.KurstillfalleLarare_Entity", b =>
                 {
-                    b.Property<Guid>("KursTillfallenId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
-                    b.Property<string>("LarareEmail")
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Larare")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.HasKey("KursTillfallenId", "LarareEmail")
-                        .HasName("PK_KurstillfalleLarare_KurstillfalleId_LarareEmail");
+                    b.HasKey("ID")
+                        .HasName("PK_KurstillfalleLarare_ID");
 
                     b.ToTable("KurstillfalleLarare", (string)null);
                 });
 
             modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.Kurstillfalle_Entity", b =>
                 {
-                    b.Property<Guid>("KursTillfallenId")
+                    b.Property<Guid>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("KursKod")
+                    b.Property<string>("KursKodID")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<string>("LarareEmail")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<int>("MaxSeats")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("Ortid")
-                        .HasColumnType("uuid");
+                    b.Property<int>("Ortid")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("Slutdatum")
                         .HasColumnType("timestamp with time zone");
@@ -161,10 +171,10 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.Property<DateTime>("Startdatum")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("KursTillfallenId")
+                    b.HasKey("ID")
                         .HasName("PK_KursTillfalle_KursId");
 
-                    b.HasIndex("KursKod");
+                    b.HasIndex("KursKodID");
 
                     b.HasIndex("Ortid");
 
@@ -173,7 +183,7 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 
             modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.Larare_Entity", b =>
                 {
-                    b.Property<string>("LarareEmail")
+                    b.Property<string>("Email")
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
@@ -192,23 +202,15 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<Guid?>("KurstillfalleLarare_EntityKursTillfallenId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("KurstillfalleLarare_EntityLarareEmail")
-                        .HasColumnType("character varying(255)");
-
                     b.Property<string>("Mellannamn")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.HasKey("LarareEmail")
+                    b.HasKey("Email")
                         .HasName("PK_Larare_LarareEmail");
 
-                    b.HasIndex("KurstillfalleLarare_EntityKursTillfallenId", "KurstillfalleLarare_EntityLarareEmail");
-
-                    b.HasIndex(new[] { "LarareEmail" }, "UQ_Larare_LarareEmail")
+                    b.HasIndex(new[] { "Email" }, "UQ_Larare_LarareEmail")
                         .IsUnique();
 
                     b.ToTable("Larare", null, t =>
@@ -219,9 +221,11 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 
             modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.Ort_Entity", b =>
                 {
-                    b.Property<Guid>("OrtId")
+                    b.Property<int>("OrtId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrtId"));
 
                     b.Property<string>("OrtNamn")
                         .IsRequired()
@@ -237,33 +241,77 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.ToTable("Ort", (string)null);
                 });
 
-            modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.KursRegi_Entity", b =>
+            modelBuilder.Entity("KursLarare", b =>
+                {
+                    b.Property<string>("LarareEmail")
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<int>("KurstillfalleLarareEmail")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LarareEmail", "KurstillfalleLarareEmail");
+
+                    b.HasIndex("KurstillfalleLarareEmail");
+
+                    b.ToTable("LarareKurser", (string)null);
+                });
+
+            modelBuilder.Entity("RegistreradLarare", b =>
+                {
+                    b.Property<Guid>("KursTillfallenID")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("KurstillfalleLarareID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("KursTillfallenID", "KurstillfalleLarareID");
+
+                    b.HasIndex("KurstillfalleLarareID");
+
+                    b.ToTable("RegiLarareTillfallen", (string)null);
+                });
+
+            modelBuilder.Entity("RegistreringsTillfalle", b =>
+                {
+                    b.Property<Guid>("KursTillfallenID")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("KursRegiID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("KursTillfallenID", "KursRegiID");
+
+                    b.HasIndex("KursRegiID");
+
+                    b.ToTable("RegiKursTillfallen", (string)null);
+                });
+
+            modelBuilder.Entity("AntagenKurs", b =>
                 {
                     b.HasOne("DatalagringOskarVidell.Domain.Entities.DeltagareEntity", null)
-                        .WithMany("Kursregi")
-                        .HasForeignKey("DeltagareEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_Deltagare_KursRegi_DeltagareEmail");
+                        .WithMany()
+                        .HasForeignKey("DeltagareID")
+                        .IsRequired();
 
-                    b.HasOne("DatalagringOskarVidell.Domain.Entities.Kurs_Entity", null)
-                        .WithMany("Kurstillfallen")
-                        .HasForeignKey("Kurs_EntityKurskod");
+                    b.HasOne("DatalagringOskarVidell.Domain.Entities.KursRegi_Entity", null)
+                        .WithMany()
+                        .HasForeignKey("KursRegiID")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.Kurstillfalle_Entity", b =>
                 {
                     b.HasOne("DatalagringOskarVidell.Domain.Entities.Kurs_Entity", "Kurs")
-                        .WithMany()
-                        .HasForeignKey("KursKod")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Kurstillfallen")
+                        .HasForeignKey("KursKodID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_KursTillfalle_Kurs_KursKod");
 
                     b.HasOne("DatalagringOskarVidell.Domain.Entities.Ort_Entity", "Ort")
-                        .WithMany()
+                        .WithMany("Kurstillfallen")
                         .HasForeignKey("Ortid")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_KursTillfalle_Ort_Ortid");
 
@@ -272,16 +320,43 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.Navigation("Ort");
                 });
 
-            modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.Larare_Entity", b =>
+            modelBuilder.Entity("KursLarare", b =>
                 {
                     b.HasOne("DatalagringOskarVidell.Domain.Entities.KurstillfalleLarare_Entity", null)
-                        .WithMany("LarareRegi")
-                        .HasForeignKey("KurstillfalleLarare_EntityKursTillfallenId", "KurstillfalleLarare_EntityLarareEmail");
+                        .WithMany()
+                        .HasForeignKey("KurstillfalleLarareEmail")
+                        .IsRequired();
+
+                    b.HasOne("DatalagringOskarVidell.Domain.Entities.Larare_Entity", null)
+                        .WithMany()
+                        .HasForeignKey("LarareEmail")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.DeltagareEntity", b =>
+            modelBuilder.Entity("RegistreradLarare", b =>
                 {
-                    b.Navigation("Kursregi");
+                    b.HasOne("DatalagringOskarVidell.Domain.Entities.Kurstillfalle_Entity", null)
+                        .WithMany()
+                        .HasForeignKey("KursTillfallenID")
+                        .IsRequired();
+
+                    b.HasOne("DatalagringOskarVidell.Domain.Entities.KurstillfalleLarare_Entity", null)
+                        .WithMany()
+                        .HasForeignKey("KurstillfalleLarareID")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("RegistreringsTillfalle", b =>
+                {
+                    b.HasOne("DatalagringOskarVidell.Domain.Entities.KursRegi_Entity", null)
+                        .WithMany()
+                        .HasForeignKey("KursRegiID")
+                        .IsRequired();
+
+                    b.HasOne("DatalagringOskarVidell.Domain.Entities.Kurstillfalle_Entity", null)
+                        .WithMany()
+                        .HasForeignKey("KursTillfallenID")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.Kurs_Entity", b =>
@@ -289,9 +364,9 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.Navigation("Kurstillfallen");
                 });
 
-            modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.KurstillfalleLarare_Entity", b =>
+            modelBuilder.Entity("DatalagringOskarVidell.Domain.Entities.Ort_Entity", b =>
                 {
-                    b.Navigation("LarareRegi");
+                    b.Navigation("Kurstillfallen");
                 });
 #pragma warning restore 612, 618
         }

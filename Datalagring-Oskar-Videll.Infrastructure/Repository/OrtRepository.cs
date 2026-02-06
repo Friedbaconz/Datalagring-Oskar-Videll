@@ -25,7 +25,8 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             return new OrtDto
             (
                 entity.OrtId,
-                entity.OrtNamn
+                entity.OrtNamn,
+                entity.Kurstillfallen
             );
         }
         catch (Exception ex)
@@ -34,9 +35,9 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
         }
     }
 
-    public async Task<bool> DeleteAsync(Guid ortId, CancellationToken Ctoken)
+    public async Task<bool> DeleteAsync(int ortId, CancellationToken Ctoken)
     {
-        if (ortId == Guid.Empty)
+        if (ortId == 0)
         {
             throw new ArgumentException("OrtId cannot be empty", nameof(ortId));
         }
@@ -62,16 +63,17 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             Select(e => new OrtDto
             (
                 e.OrtId,
-                e.OrtNamn
+                e.OrtNamn,
+                e.Kurstillfallen
             ))
             .ToListAsync(Ctoken);
 
         return entities;
     }
 
-    public async Task<OrtDto?> GetByIdAsync(Guid ortId, CancellationToken Ctoken)
+    public async Task<OrtDto?> GetByIdAsync(int ortId, CancellationToken Ctoken)
     {
-        if (ortId == Guid.Empty)
+        if (ortId == 0)
         {
             throw new ArgumentException("OrtId cannot be empty", nameof(ortId));
         }
@@ -82,7 +84,8 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             .Select(e => new OrtDto
             (
                 e.OrtId,
-                e.OrtNamn
+                e.OrtNamn,
+                e.Kurstillfallen
             ))
             .SingleOrDefaultAsync(Ctoken);
 
@@ -90,9 +93,9 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
 
     }
 
-    public async Task<OrtDto?> UpdateAsync(Guid ortId, UpdateOrtDto OrtRequest, CancellationToken Ctoken)
+    public async Task<OrtDto?> UpdateAsync(int ortId, UpdateOrtDto OrtRequest, CancellationToken Ctoken)
     {
-        if (ortId == Guid.Empty)
+        if (ortId == 0)
         {
             throw new ArgumentException("OrtId cannot be empty", nameof(ortId));
         }
@@ -113,7 +116,8 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             .Select(e => new OrtDto
             (
                 e.OrtId,
-                e.OrtNamn
+                e.OrtNamn,
+                e.Kurstillfallen
             ))
             .SingleOrDefaultAsync(Ctoken);
     }

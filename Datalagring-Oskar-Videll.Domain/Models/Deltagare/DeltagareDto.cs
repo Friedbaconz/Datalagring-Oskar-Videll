@@ -1,5 +1,7 @@
 ﻿
 
+using DatalagringOskarVidell.Domain.Entities;
+
 namespace DatalagringOskarVidell.Domain.Models.Deltagare;
 
 public sealed record DeltagareDto(
@@ -8,6 +10,7 @@ public sealed record DeltagareDto(
     string? Middlename,
     string Lastname,
     string Email,
-    string? Phonenumber
+    string? Phonenumber,
+    ICollection<KursRegi_Entity> Antagnakurser
 );
 

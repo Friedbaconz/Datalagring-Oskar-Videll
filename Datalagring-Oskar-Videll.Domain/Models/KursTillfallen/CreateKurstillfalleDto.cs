@@ -7,12 +7,13 @@ using DatalagringOskarVidell.Domain.Models.KursTillfallen;
 
 public sealed record CreateKurstillfalleDto(
 
+    string Kurskod,
+
     DateTime Startdatum,
 
     DateTime Slutdatum,
 
-    int Maxseats
+    int Maxseats,
 
-
-
+    int OrtId
 );
