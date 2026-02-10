@@ -6,10 +6,10 @@ namespace DatalagringOskarVidell.Domain.Models.KursRegi;
 
 public sealed record UpdateKursRegiDto(
 
-    int KursRegiId,
-    int Antagen,
+    Guid KursRegiId,
+    Guid Antagen,
     DateTime RegistrationDate,
     string Status,
-    ICollection<DeltagareEntity> DeltagareRegi,
-    ICollection<Kurstillfalle_Entity> Kurstillfallen
+    DeltagareEntity DeltagareRegi,
+    Kurstillfalle_Entity Kurstillfallen
 );

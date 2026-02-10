@@ -11,5 +11,5 @@ public sealed record UpdateDeltagareDto(
     string Lastname,
     string Email,
     string? Phonenumber,
-    ICollection<KursRegi_Entity> Antagnakurser
+    ICollection<Kurstillfalle_Entity> Antagnakurser
 );

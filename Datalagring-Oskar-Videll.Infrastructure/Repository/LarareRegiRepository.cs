@@ -43,9 +43,9 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
 
     }
 
-    public async Task<bool> DeleteAsync(int Id, CancellationToken Ctoken)
+    public async Task<bool> DeleteAsync(Guid Id, CancellationToken Ctoken)
     {
-        if (Id == 0)
+        if (Id == Guid.Empty)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
@@ -79,9 +79,9 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
         return entities;
     }
 
-    public async Task<LarareRegiDto?> GetByIdAsync(int Id, CancellationToken Ctoken)
+    public async Task<LarareRegiDto?> GetByIdAsync(Guid Id, CancellationToken Ctoken)
     {
-        if (Id == 0)
+        if (Id == Guid.Empty)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
@@ -100,9 +100,9 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
         return entity is null ? null : entity;
     }
 
-    public async Task<LarareRegiDto?> UpdateAsync(int Id, UpdateLarareRegiDto KurstillfalleRequest, CancellationToken Ctoken)
+    public async Task<LarareRegiDto?> UpdateAsync(Guid Id, UpdateLarareRegiDto KurstillfalleRequest, CancellationToken Ctoken)
     {
-        if (Id == 0)
+        if (Id == Guid.Empty)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }

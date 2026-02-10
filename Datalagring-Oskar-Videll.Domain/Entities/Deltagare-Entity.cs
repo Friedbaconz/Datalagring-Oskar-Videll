@@ -14,5 +14,5 @@ public class DeltagareEntity
     public string Email { get; set; } = null!;
     public string? Telefonnummer { get; set; }
 
-    public ICollection<KursRegi_Entity> Kursregi = [];
+    public ICollection<Kurstillfalle_Entity> KursRegiDeltagare = [];
 }

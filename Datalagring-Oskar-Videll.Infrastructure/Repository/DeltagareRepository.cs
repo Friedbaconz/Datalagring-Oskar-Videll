@@ -28,7 +28,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
             _context.Deltagare_Entity.Add(Entity);
             await _context.SaveChangesAsync(Ctoken);
 
-            return new DeltagareDto(Entity.ID, Entity.Fornamn, Entity.Mellannamn, Entity.Efternamn, Entity.Email, Entity.Telefonnummer, Entity.Kursregi);
+            return new DeltagareDto(Entity.ID, Entity.Fornamn, Entity.Mellannamn, Entity.Efternamn, Entity.Email, Entity.Telefonnummer, Entity.KursRegiDeltagare);
 
     }
 
@@ -69,7 +69,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
                 e.Efternamn,
                 e.Email,
                 e.Telefonnummer,
-                e.Kursregi
+                e.KursRegiDeltagare
             ))
             .ToListAsync(Ctoken);
 
@@ -94,7 +94,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
                 e.Efternamn,
                 e.Email,
                 e.Telefonnummer,
-                e.Kursregi
+                e.KursRegiDeltagare
             ))
             .SingleOrDefaultAsync(Ctoken);
         return deltagare is null ? null : deltagare;
@@ -128,7 +128,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
                 e.Efternamn,
                 e.Email,
                 e.Telefonnummer,
-                e.Kursregi
+                e.KursRegiDeltagare
             ))
             .SingleOrDefaultAsync(Ctoken);
     }

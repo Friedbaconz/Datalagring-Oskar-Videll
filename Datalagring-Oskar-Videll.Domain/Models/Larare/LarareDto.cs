@@ -10,5 +10,5 @@ public sealed record LarareDto(
     string? Middlename,
     string Lastname,
     string Kompentens,
-    ICollection<KurstillfalleLarare_Entity> Tillfallen
+    ICollection<Kurstillfalle_Entity> Tillfallen
 );

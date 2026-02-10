@@ -271,11 +271,11 @@ app.MapDelete("/api/Kurstillfalle/{KursTillfallenId:guid}", async (Guid KursTill
 
 app.MapPost("/api/KursRegi", async (CreateKursRegiDto req, IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
 {
-    var dto = new CreateKursRegiDto(req.KursRegiId, req.Antagen, req.RegistrationDate, req.Status);
+    var dto = new CreateKursRegiDto(req.RegiID, req.Antagen, req.RegistrationDate, req.Status);
 
     var Regi = await RegiOptions.CreateAsync(dto, Ctoken);
 
-    return Results.Created($"/api/KursRegi/{Regi.KursRegiId}", Regi);
+    return Results.Created($"/api/KursRegi/{Regi.RegiID}", Regi);
 });
 
 app.MapGet("/api/KursRegi/", async (IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>

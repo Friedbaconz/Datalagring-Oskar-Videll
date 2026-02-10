@@ -37,7 +37,7 @@ Content-Type: application/json
 POST {{Testing}}/api/Kurs
 Content-Type: application/json
 {
-         "Kurskod" : "FF22",
+         "Kurskod" : "FF40",
          "Kursnamn": "IT Höst",
          "Description": "IT kurs under hösten 202?"
 }
@@ -51,8 +51,7 @@ Content-Type: application/json
           "Startdatum": "2022-12-31T23:59:59Z",
           "Slutdatum" : "2022-12-31T23:59:59Z",
           "Maxseats": "40",
-          "OrtId" : "019c2ddc-f3c0-7961-84d5-7103d62c4776",
-          "LarareEmail" : "test@exemple.com"
+          "OrtId" : "1"
 }
 
 ###
@@ -60,8 +59,8 @@ Content-Type: application/json
 POST {{Testing}}/api/KursRegi
 Content-Type: application/json
 {
-          "KursRegiId" : "f1e613ed-4797-4e36-b6b5-d262f900895c",
-          "Antagen" : "ebd4628c-e1ea-4f6a-830c-191daba8af9c",
+          "RegiID" : "eb3a35a6-dca7-4981-a2ac-33c3102941f5",
+          "Antagen" : "9336f225-1d71-461d-8ca6-878cbb341fe5",
           "RegistrationDate" : "2022-12-31T23:59:59Z",
           "Status" : "Open"
 }

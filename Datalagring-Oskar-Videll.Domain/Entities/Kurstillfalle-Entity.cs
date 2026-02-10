@@ -17,7 +17,7 @@ public class Kurstillfalle_Entity
     public Ort_Entity Ort = null!;
 
 
-    public ICollection<KursRegi_Entity> KursRegi = [];
+    public ICollection<DeltagareEntity> KursRegi = [];
 
-    public ICollection<KurstillfalleLarare_Entity> KursTillfallenLarare = [];
+    public ICollection<Larare_Entity> KursTillfallenLarare = [];
 }

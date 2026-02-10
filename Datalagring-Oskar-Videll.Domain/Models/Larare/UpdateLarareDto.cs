@@ -9,5 +9,5 @@ public sealed record UpdateLarareDto(
     string? Middlename,
     string Lastname,
     string Kompentens,
-    ICollection<KurstillfalleLarare_Entity> Tillfallen
+    ICollection<Kurstillfalle_Entity> Tillfallen
 );

@@ -2,6 +2,7 @@
 using DatalagringOskarVidell.Application.Contracts;
 using DatalagringOskarVidell.Domain.Entities;
 using DatalagringOskarVidell.Domain.Models.KursRegi;
+using DatalagringOskarVidell.Domain.Models.KursTillfallen;
 using DatalagringOskarVidell.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using static Dapper.SqlMapper;
@@ -12,30 +13,34 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
 {
     private readonly DeltagareDBContext _context = context;
 
-    public async Task<KursRegiDto> CreateAsync(CreateKursRegiDto KursRegiRequest, CancellationToken Ctoken)
+    public async Task<KursRegiDto?> CreateAsync(CreateKursRegiDto KursRegiRequest, CancellationToken Ctoken)
     {
         var entity = new KursRegi_Entity
         {
             Antagen = KursRegiRequest.Antagen,
-            ID = KursRegiRequest.KursRegiId,
+            ID = KursRegiRequest.RegiID,
             status = KursRegiRequest.Status,
-            RegiDatum = KursRegiRequest.RegistrationDate
+            RegiDatum = KursRegiRequest.RegistrationDate,
+            DeltagareRegi = await _context.Deltagare_Entity.FirstOrDefaultAsync(e => e.ID == KursRegiRequest.Antagen),
+            Kurstillfallen = await _context.KursTillfalle.FirstOrDefaultAsync(e => e.ID == KursRegiRequest.RegiID)
         };
 
         try
         {
-            _context.KursRegi.Add(entity);
+            await _context.KursRegi.AddAsync(entity);
             await _context.SaveChangesAsync(Ctoken);
-            return new KursRegiDto
-            (
-
-                entity.ID,
-                entity.Antagen,
+            return await _context.KursRegi
+            .AsNoTracking()
+            .Where(e => e.ID == entity.ID)
+            .Select(entity => new KursRegiDto(
+                entity.Kurstillfallen.ID,
+                entity.DeltagareRegi.ID,
                 entity.RegiDatum,
                 entity.status,
                 entity.DeltagareRegi,
                 entity.Kurstillfallen
-            );
+                ))
+            .SingleOrDefaultAsync(Ctoken);
 
         }
         catch (Exception ex)
@@ -44,9 +49,9 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
         }
     }
 
-    public async Task<bool> DeleteAsync(int Id, CancellationToken Ctoken)
+    public async Task<bool> DeleteAsync(Guid Id, CancellationToken Ctoken)
     {
-        if (Id == 0)
+        if (Id == Guid.Empty)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
@@ -81,9 +86,9 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
         return entities;
     }
 
-    public async Task<KursRegiDto?> GetByIDAsync(int Id, CancellationToken Ctoken)
+    public async Task<KursRegiDto?> GetByIDAsync(Guid Id, CancellationToken Ctoken)
     {
-        if (Id == 0)
+        if (Id == Guid.Empty)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
@@ -105,9 +110,9 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
         return entity is null ? null : entity;
     }
 
-    public async Task<KursRegiDto?> UpdateAsync(int Id, UpdateKursRegiDto KursRequest, CancellationToken Ctoken)
+    public async Task<KursRegiDto?> UpdateAsync(Guid Id, UpdateKursRegiDto KursRequest, CancellationToken Ctoken)
     {
-        if (Id == 0) {
+        if (Id == Guid.Empty) {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
         var entity = await _context.KursRegi.SingleOrDefaultAsync(e => e.ID == Id, Ctoken)

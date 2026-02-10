@@ -3,7 +3,7 @@
 namespace DatalagringOskarVidell.Domain.Models.KursRegi.LarareRegi;
 
 public sealed record CreateLarareRegiDto(
-    int LarareRegiId,
+    Guid LarareRegiId,
     string LarareEmail
 );
 

@@ -4,10 +4,10 @@ using DatalagringOskarVidell.Domain.Entities;
 namespace DatalagringOskarVidell.Domain.Models.KursRegi;
 
 public sealed record KursRegiDto(
-    int KursRegiId,
-    int Antagen,
+    Guid RegiID,
+    Guid Antagen,
     DateTime RegistrationDate,
     string Status,
-    ICollection<DeltagareEntity> DeltagareRegi,
-    ICollection<Kurstillfalle_Entity> Kurstillfallen
+    DeltagareEntity DeltagareRegi,
+    Kurstillfalle_Entity Kurstillfallen
 );
