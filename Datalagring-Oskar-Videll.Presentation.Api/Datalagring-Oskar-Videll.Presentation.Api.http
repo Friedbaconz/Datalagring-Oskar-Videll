@@ -66,3 +66,12 @@ Content-Type: application/json
 }
 
 ###
+
+POST {{Testing}}/api/LarareRegi
+Content-Type: application/json
+{
+          "LarareRegiId" : "eb3a35a6-dca7-4981-a2ac-33c3102941f5",
+          "LarareEmail" : "Did@doe@exemple.com"
+}
+
+###

@@ -7,7 +7,7 @@ namespace DatalagringOskarVidell.Application.Contracts;
 
 public interface ILarareRegiRepository
 {
-    Task<LarareRegiDto> CreateAsync(CreateLarareRegiDto LarareRegiRequest, CancellationToken Ctoken);
+    Task<LarareRegiDto?> CreateAsync(CreateLarareRegiDto LarareRegiRequest, CancellationToken Ctoken);
     Task<LarareRegiDto?> GetByIdAsync(Guid Id, CancellationToken Ctoken);
     Task<IReadOnlyList<LarareRegiDto>> GetAllAsync(CancellationToken Ctoken);
     Task<LarareRegiDto?> UpdateAsync(Guid Id, UpdateLarareRegiDto KurstillfalleRequest, CancellationToken Ctoken);

@@ -1,5 +1,6 @@
 ﻿using DatalagringOskarVidell.Application.Contracts;
 using DatalagringOskarVidell.Domain.Entities;
+using DatalagringOskarVidell.Domain.Models.KursRegi;
 using DatalagringOskarVidell.Domain.Models.KursRegi.LarareRegi;
 using DatalagringOskarVidell.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -13,26 +14,32 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
 {
     private readonly DeltagareDBContext _Context = dbContext;
 
-    public async Task<LarareRegiDto> CreateAsync(CreateLarareRegiDto LarareRegiRequest, CancellationToken Ctoken)
+    public async Task<LarareRegiDto?> CreateAsync(CreateLarareRegiDto LarareRegiRequest, CancellationToken Ctoken)
     {
         var entity = new KurstillfalleLarare_Entity
             {
             Larare = LarareRegiRequest.LarareEmail,
-            ID = LarareRegiRequest.LarareRegiId
+            ID = LarareRegiRequest.LarareRegiId,
+            LarareRegi = await _Context.Larare.FirstOrDefaultAsync(e => e.Email == LarareRegiRequest.LarareEmail),
+            Kurstillfallen = await _Context.KursTillfalle.FirstOrDefaultAsync(e => e.ID == LarareRegiRequest.LarareRegiId)
             };
 
         try
         {
-            _Context.Larare_Kurstillfalle.Add(entity);
+            await _Context.Larare_Kurstillfalle.AddAsync(entity);
             await _Context.SaveChangesAsync(Ctoken);
 
-            return new LarareRegiDto
-            (
-                entity.ID,
-                entity.Larare,
+            return await _Context.Larare_Kurstillfalle
+            .AsNoTracking()
+            .Where(e => e.ID == entity.ID)
+            .Select(entity => new LarareRegiDto(
+                entity.Kurstillfallen.ID,
+                entity.LarareRegi.Email,
                 entity.LarareRegi,
                 entity.Kurstillfallen
-            );
+
+                ))
+            .SingleOrDefaultAsync(Ctoken);
         }
         catch (Exception ex)
         {

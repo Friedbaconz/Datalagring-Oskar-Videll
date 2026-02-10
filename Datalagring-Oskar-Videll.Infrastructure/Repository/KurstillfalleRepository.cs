@@ -25,7 +25,7 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
             MaxSeats = KurstillfalleRequest.Maxseats,
             Kurs = _context.Kurs.FirstOrDefault(e => e.Kurskod == KurstillfalleRequest.Kurskod),
             Ortid = KurstillfalleRequest.OrtId,
-            Ort = _context.Ort.FirstOrDefault(e => e.OrtId == KurstillfalleRequest.OrtId),
+            Ort = _context.Ort.FirstOrDefault(e => e.OrtId == KurstillfalleRequest.OrtId)
         };
 
         _context.KursTillfalle.Add(entity);
@@ -42,7 +42,8 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
                 entity.Slutdatum,
                 entity.MaxSeats,
                 entity.Ort.OrtId,
-                entity.Ort
+                entity.Ort,
+                entity.KursTillfallenLarare
                 ))
             .SingleOrDefaultAsync(Ctoken);
     }
@@ -78,7 +79,8 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
                 entity.Slutdatum,
                 entity.MaxSeats,
                 entity.Ort.OrtId,
-                entity.Ort
+                entity.Ort,
+                entity.KursTillfallenLarare
                 ))
             .ToListAsync(Ctoken);
 
@@ -103,7 +105,8 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
                 entity.Slutdatum,
                 entity.MaxSeats,
                 entity.Ort.OrtId,
-                entity.Ort
+                entity.Ort,
+                entity.KursTillfallenLarare
                 ))
             .SingleOrDefaultAsync(Ctoken);
 
@@ -138,7 +141,8 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
                 entity.Slutdatum,
                 entity.MaxSeats,
                 entity.Ort.OrtId,
-                entity.Ort
+                entity.Ort,
+                entity.KursTillfallenLarare
                 ))
             .SingleOrDefaultAsync(Ctoken);
 
