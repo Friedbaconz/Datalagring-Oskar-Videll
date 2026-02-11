@@ -69,10 +69,10 @@ public sealed class UserRepository_Test(SqliteInMemoryFixture fixture)
             (
                 Id: id,
                 Firstname: "bob",
-                Middlename: "nej",
-                Lastname: "jej",
-                Email: "nej@email.se",
-                Phonenumber: "123456789",
+                Middlename: "new",
+                Lastname: "new",
+                Email: "new@email.se",
+                Phonenumber: "987654321",
                 Antagnakurser: []
             ), CancellationToken.None);
 
@@ -80,34 +80,25 @@ public sealed class UserRepository_Test(SqliteInMemoryFixture fixture)
         Assert.Single(all);
         Assert.Equal(id, all[0].Id);
         Assert.Equal("bob", all[0].Firstname);
-        Assert.Equal("nej", all[0].Middlename);
-        Assert.Equal("jej", all[0].Lastname);
-        Assert.Equal("nej@email.se", all[0].Email);
-        Assert.Equal("123456789", all[0].Phonenumber);
+        Assert.Equal("new", all[0].Middlename);
+        Assert.Equal("new", all[0].Lastname);
+        Assert.Equal("new@email.se", all[0].Email);
+        Assert.Equal("987654321", all[0].Phonenumber);
     }
 
     [Fact]
-    public async Task GetByID_Should_Return_Requested_Profile()
+    public async Task GetByID_Should_Return_Null_When_NotFound()
     {
         await using var db = fixture.CreatedDbContext();
         await ClearUsersAsync(db);
 
         var repo = new DeltagareRepository(db);
 
-        var id = await repo.CreateAsync(new CreateDeltagareDto
-        (
-            Firstname: "hey",
-            Middlename: "nej",
-            Lastname: "jej",
-            Email: "nej@email.se",
-            Phonenumber: "123456789"
-        ), CancellationToken.None);
+        Guid testguid = Guid.NewGuid();
 
-        Assert.True(id != Guid.Empty);
+        var byid = await repo.GetByIDAsync(testguid , CancellationToken.None);
 
-        var byid = await repo.GetByIDAsync(id, CancellationToken.None);
-
-        Assert.True(id == byid!.Id);
+        Assert.Null(byid);
     }
 
     [Fact]
@@ -129,7 +120,7 @@ public sealed class UserRepository_Test(SqliteInMemoryFixture fixture)
 
         var Delete = await repo.DeleteAsync(id, CancellationToken.None);
 
-        Assert.True(Delete = true);
+        Assert.True(Delete);
     }
 
     [Fact]
@@ -160,6 +151,37 @@ public sealed class UserRepository_Test(SqliteInMemoryFixture fixture)
         Assert.Equal("jej", all[0].Lastname);
         Assert.Equal("nej@email.se", all[0].Email);
         Assert.Equal("123456789", all[0].Phonenumber);
+    }
+
+    [Fact]
+
+    public async Task CreateAsync_Should_Throw_Exception_If_Not_Unique()
+    {
+        await using var db = fixture.CreatedDbContext();
+        await ClearUsersAsync(db);
+
+        var repo = new DeltagareRepository(db);
+
+        await repo.CreateAsync(new CreateDeltagareDto
+        (
+            Firstname: "hey",
+            Middlename: "nej",
+            Lastname: "jej",
+            Email: "nej@email.se",
+            Phonenumber: "123456789"
+        ), CancellationToken.None);
+
+        await Assert.ThrowsAsync<DbUpdateException>(async () =>
+        {
+            await repo.CreateAsync(new CreateDeltagareDto
+            (
+                Firstname: "test",
+                Middlename: "test",
+                Lastname: "test",
+                Email: "nej@email.se",
+                Phonenumber: "123456789"
+            ), CancellationToken.None);
+        });
     }
 
     private static async Task ClearUsersAsync(DeltagareDBContext db)
