@@ -80,11 +80,11 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
 
     public async Task<DeltagareDto?> UpdateAsync(Guid id, UpdateDeltagareDto DeltagareRequest, CancellationToken Ctoken)
     {
-        if (DeltagareRequest.Id == Guid.Empty)
+        if (id == Guid.Empty)
         {
             throw new ArgumentException("id cannot be null or empty", nameof(id));
         }
-        var entity = await _context.Deltagare_Entity.SingleOrDefaultAsync(e => e.ID == DeltagareRequest.Id, Ctoken)
+        var entity = await _context.Deltagare_Entity.SingleOrDefaultAsync(e => e.ID == id, Ctoken)
             ?? throw new KeyNotFoundException($"Deltagare with id {id} not found");
 
         entity.Email = DeltagareRequest.Email;
