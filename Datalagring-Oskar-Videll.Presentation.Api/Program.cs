@@ -39,6 +39,13 @@ builder.Services.AddScoped<ILarareRegiRepository, LarareRegiRepository>();
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<DeltagareDBContext>();
+    await db.Database.MigrateAsync();
+}
+
 
 app.MapOpenApi();
 app.UseHttpsRedirection();
@@ -51,7 +58,7 @@ app.MapPost("/api/Deltagare", async (CreateDeltagareDto request, IDeltagareRepos
 
     var deltagare = await deltagareOptions.CreateAsync(dto, Ctoken);
 
-    return Results.Created($"/api/Deltagare/{deltagare.Id}", deltagare);
+    return Results.Created($"/api/Deltagare/{deltagare}", deltagare);
 });
 
 
@@ -69,11 +76,11 @@ app.MapGet("/api/Deltagare/{id:guid}", async (Guid ID, IDeltagareRepository delt
 });
 
 
-app.MapPut("/api/Deltagare/{email}", async (string email, UpdateDeltagareDto req, IDeltagareRepository deltagareOptions, CancellationToken Ctoken) =>
+app.MapPut("/api/Deltagare/{id}", async (Guid id, UpdateDeltagareDto req, IDeltagareRepository deltagareOptions, CancellationToken Ctoken) =>
 {
     var dto = new UpdateDeltagareDto(req.Id, req.Firstname, req.Middlename, req.Lastname, req.Email, req.Phonenumber, req.Antagnakurser);
 
-    var deltagare = await deltagareOptions.UpdateAsync(email, dto, Ctoken);
+    var deltagare = await deltagareOptions.UpdateAsync(id, dto, Ctoken);
 
     return deltagare is not null
         ? Results.Ok(deltagare)

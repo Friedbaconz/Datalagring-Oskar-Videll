@@ -6,7 +6,7 @@ namespace DatalagringOskarVidell.Domain.Entities;
 
 public class DeltagareEntity
 {
-    public Guid ID { get; set; }
+    public Guid ID { get; set; } = Guid.NewGuid();
 
     public string Fornamn { get; set; } = null!;
     public string? Mellannamn { get; set; }
