@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 {
     [DbContext(typeof(DeltagareDBContext))]
-    [Migration("20260209172929_Entity-full-Context")]
-    partial class EntityfullContext
+    [Migration("20260213130409_entity-full-package-uniqe")]
+    partial class entityfullpackageuniqe
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,12 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.Property<Guid>("Antagen")
                         .HasColumnType("uuid");
 
+                    b.Property<int>("IDUQ")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IDUQ"));
+
                     b.Property<DateTime>("RegiDatum")
                         .HasColumnType("timestamp with time zone");
 
@@ -83,10 +89,11 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.HasKey("ID", "Antagen")
-                        .HasName("PK_RegiDeltagare_ID_Antagen");
+                    b.HasKey("ID", "Antagen", "IDUQ")
+                        .HasName("PK_KursRegi_IDUQ");
 
-                    b.HasIndex("Antagen");
+                    b.HasIndex(new[] { "Antagen" }, "UQ_KursRegi_Antagen")
+                        .IsUnique();
 
                     b.ToTable("KursRegi", (string)null);
                 });
@@ -124,10 +131,17 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.Property<string>("Larare")
                         .HasColumnType("character varying(255)");
 
-                    b.HasKey("ID", "Larare")
-                        .HasName("PK_RegiLarare_ID_Larare");
+                    b.Property<int>("IDUQ")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
 
-                    b.HasIndex("Larare");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IDUQ"));
+
+                    b.HasKey("ID", "Larare", "IDUQ")
+                        .HasName("PK_LarareRegi_IDUQ");
+
+                    b.HasIndex(new[] { "Larare" }, "UQ_LarareRegi_Larare")
+                        .IsUnique();
 
                     b.ToTable("LarareRegi", (string)null);
                 });

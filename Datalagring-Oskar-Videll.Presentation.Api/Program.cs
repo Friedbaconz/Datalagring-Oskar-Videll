@@ -305,7 +305,7 @@ app.MapGet("/api/KursRegi/{KursRegiId:guid}", async (Guid KursRegiId, IKursRegiR
 
 app.MapPut("/api/KursRegi/{KursRegiId:guid}", async (Guid KursRegiId, UpdateKursRegiDto req, IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
 {
-    var dto = new UpdateKursRegiDto(req.KursRegiId, req.Antagen, req.RegistrationDate, req.Status, req.DeltagareRegi, req.Kurstillfallen);
+    var dto = new UpdateKursRegiDto(req.ID, req.KursRegiId, req.Antagen, req.RegistrationDate, req.Status, req.DeltagareRegi, req.Kurstillfallen);
 
     var Regi = await RegiOptions.UpdateAsync(KursRegiId, dto, Ctoken);
 
@@ -350,7 +350,7 @@ app.MapGet("/api/LarareRegi/{LarareRegiId:guid}", async (Guid LarareRegiId, ILar
 
 app.MapPost("/api/LarareRegi/{LarareRegiId:guid}", async (Guid LarareRegiId, UpdateLarareRegiDto req, ILarareRegiRepository RegiOptions, CancellationToken Ctoken) =>
 {
-    var dto = new UpdateLarareRegiDto(req.LarareRegiId, req.LarareEmail, req.LarareRegi, req.Kurstillfallen);
+    var dto = new UpdateLarareRegiDto(req.id, req.LarareRegiId, req.LarareEmail, req.LarareRegi, req.Kurstillfallen);
 
     var Regi = await RegiOptions.UpdateAsync(LarareRegiId, dto, Ctoken);
 

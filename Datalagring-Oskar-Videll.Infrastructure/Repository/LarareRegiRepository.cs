@@ -33,6 +33,7 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
             .AsNoTracking()
             .Where(e => e.ID == entity.ID)
             .Select(entity => new LarareRegiDto(
+                entity.IDUQ,
                 entity.Kurstillfallen.ID,
                 entity.LarareRegi.Email,
                 entity.LarareRegi,
@@ -76,6 +77,7 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
             .AsNoTracking()
             .Select(entity => new LarareRegiDto
             (
+                entity.IDUQ,
                 entity.ID,
                 entity.Larare,
                 entity.LarareRegi,
@@ -97,6 +99,7 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
             .AsNoTracking()
             .Select(e => new LarareRegiDto
             (
+                e.IDUQ,
                 e.ID,
                 e.Larare,
                 e.LarareRegi,
@@ -126,6 +129,7 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
             .AsNoTracking()
             .Select(e => new LarareRegiDto
             (
+                e.IDUQ,
                 e.ID,
                 e.Larare,
                 e.LarareRegi,

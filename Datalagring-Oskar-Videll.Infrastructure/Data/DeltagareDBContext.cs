@@ -145,11 +145,15 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                 e =>
                 {
                     e.ToTable("LarareRegi");
-                    e.HasKey(e => new { e.ID, e.Larare }).HasName("PK_RegiLarare_ID_Larare");
+                    e.HasKey(e => new { e.ID, e.Larare, e.IDUQ }).HasName("PK_LarareRegi_IDUQ");
+                    e.Property(e => e.IDUQ)
+                        .IsRequired()
+                        .ValueGeneratedOnAdd();
                     e.Property(e => e.Larare)
                         .IsRequired();
                     e.Property(e => e.ID)
                         .IsRequired();
+                    e.HasIndex(e => e.Larare, "UQ_LarareRegi_Larare").IsUnique();
                 }
             );
 
@@ -162,7 +166,10 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                 e => 
                 {
                     e.ToTable("KursRegi");
-                    e.HasKey( e => new { e.ID, e.Antagen }).HasName("PK_RegiDeltagare_ID_Antagen");
+                    e.HasKey( e => new { e.ID, e.Antagen, e.IDUQ }).HasName("PK_KursRegi_IDUQ");
+                    e.Property(e => e.IDUQ)
+                        .IsRequired()
+                        .ValueGeneratedOnAdd();
                     e.Property(e => e.ID)
                         .IsRequired();
                     e.Property(e => e.Antagen)
@@ -171,6 +178,7 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                         .HasMaxLength(200);
                     e.Property(e => e.RegiDatum)
                         .IsRequired();
+                    e.HasIndex(e => e.Antagen, "UQ_KursRegi_Antagen").IsUnique();
                 }
             );
 

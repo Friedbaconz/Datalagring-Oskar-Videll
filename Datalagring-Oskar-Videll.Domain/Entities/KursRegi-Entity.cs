@@ -3,6 +3,7 @@ namespace DatalagringOskarVidell.Domain.Entities;
 
 public class KursRegi_Entity
 {
+    public int IDUQ { get; set; }
     public Guid ID { get; set; }
     public Guid Antagen { get; set; }
     public Kurstillfalle_Entity Kurstillfallen { get; set; } = null!;

@@ -4,6 +4,7 @@ using DatalagringOskarVidell.Domain.Entities;
 namespace DatalagringOskarVidell.Domain.Models.KursRegi.LarareRegi;
 
 public sealed record LarareRegiDto(
+    int id,
     Guid LarareRegiId,
     string LarareEmail,
     Larare_Entity LarareRegi,

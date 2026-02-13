@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class EntityfullContext : Migration
+    public partial class entityfullpackageuniqe : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -103,6 +103,8 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 name: "KursRegi",
                 columns: table => new
                 {
+                    IDUQ = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ID = table.Column<Guid>(type: "uuid", nullable: false),
                     Antagen = table.Column<Guid>(type: "uuid", nullable: false),
                     RegiDatum = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -110,7 +112,7 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RegiDeltagare_ID_Antagen", x => new { x.ID, x.Antagen });
+                    table.PrimaryKey("PK_KursRegi_IDUQ", x => new { x.ID, x.Antagen, x.IDUQ });
                     table.ForeignKey(
                         name: "FK_KursRegi_Deltagare_Antagen",
                         column: x => x.Antagen,
@@ -127,12 +129,14 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 name: "LarareRegi",
                 columns: table => new
                 {
+                    IDUQ = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     ID = table.Column<Guid>(type: "uuid", nullable: false),
                     Larare = table.Column<string>(type: "character varying(255)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RegiLarare_ID_Larare", x => new { x.ID, x.Larare });
+                    table.PrimaryKey("PK_LarareRegi_IDUQ", x => new { x.ID, x.Larare, x.IDUQ });
                     table.ForeignKey(
                         name: "FK_LarareRegi_KursTillfalle_ID",
                         column: x => x.ID,
@@ -158,9 +162,10 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_KursRegi_Antagen",
+                name: "UQ_KursRegi_Antagen",
                 table: "KursRegi",
-                column: "Antagen");
+                column: "Antagen",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_KursTillfalle_KursKodID",
@@ -179,9 +184,10 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_LarareRegi_Larare",
+                name: "UQ_LarareRegi_Larare",
                 table: "LarareRegi",
-                column: "Larare");
+                column: "Larare",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "UQ_Ort_Ortnamn",

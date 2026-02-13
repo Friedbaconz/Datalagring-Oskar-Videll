@@ -16,12 +16,16 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
 
     public async Task<KurstillfalleDto?> CreateAsync(CreateKurstillfalleDto KurstillfalleRequest, CancellationToken Ctoken)
     {
+        var Start = DateTime.SpecifyKind(KurstillfalleRequest.Startdatum, DateTimeKind.Utc);
+        var Slut = DateTime.SpecifyKind(KurstillfalleRequest.Slutdatum, DateTimeKind.Utc);
+
         var entity = new Kurstillfalle_Entity
         {
+
             ID = Guid.NewGuid(),
             KursKodID = KurstillfalleRequest.Kurskod,
-            Startdatum = KurstillfalleRequest.Startdatum,
-            Slutdatum = KurstillfalleRequest.Slutdatum,
+            Startdatum = Start,
+            Slutdatum = Slut,
             MaxSeats = KurstillfalleRequest.Maxseats,
             Kurs = _context.Kurs.FirstOrDefault(e => e.Kurskod == KurstillfalleRequest.Kurskod),
             Ortid = KurstillfalleRequest.OrtId,

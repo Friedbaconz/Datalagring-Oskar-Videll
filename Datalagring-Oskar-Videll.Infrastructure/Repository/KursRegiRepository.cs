@@ -29,10 +29,12 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
         {
             await _context.KursRegi.AddAsync(entity);
             await _context.SaveChangesAsync(Ctoken);
+
             return await _context.KursRegi
             .AsNoTracking()
-            .Where(e => e.ID == entity.ID)
+            .Where(e => e.IDUQ == entity.IDUQ)
             .Select(entity => new KursRegiDto(
+                entity.IDUQ,
                 entity.Kurstillfallen.ID,
                 entity.DeltagareRegi.ID,
                 entity.RegiDatum,
@@ -74,6 +76,7 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
             AsNoTracking().
             Select(e => new KursRegiDto
             (
+                e.IDUQ,
                 e.ID,
                 e.Antagen,
                 e.RegiDatum,
@@ -98,6 +101,7 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
             Where(e => e.ID == Id).
             Select(e => new KursRegiDto
             (
+                e.IDUQ,
                 e.ID,
                 e.Antagen,
                 e.RegiDatum,
@@ -128,6 +132,7 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
             Where(e => e.ID == Id).
             Select(e => new KursRegiDto
             (
+                e.IDUQ,
                 e.ID,
                 e.Antagen,
                 e.RegiDatum,
