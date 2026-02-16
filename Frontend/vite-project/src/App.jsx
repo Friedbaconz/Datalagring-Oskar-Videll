@@ -5,6 +5,7 @@ import LarareList from './components/LarareList'
 import OrtList from './components/OrtList'
 import KursList from './components/KursList'
 import KurstillfalleList from './components/KurstillfalleList'
+import KurstillfallelarareList from './components/KurstillfallelarareList'
 
 function App() {
   const [view, setView] = useState('deltagare')
@@ -19,6 +20,7 @@ function App() {
           <button onClick={() => setView('ort')}>Ort</button>
           <button onClick={() => setView('kurs')}>Kurs</button>
           <button onClick={() => setView('kurstillfalle')}>Kurstillfälle</button>
+          <button onClick={() => setView('kurstillfallelarare')}>Kurstillfälle Lärare</button>
         </nav>
       </header>
 
@@ -28,6 +30,7 @@ function App() {
         {view === 'ort' && <OrtList />}
         {view === 'kurs' && <KursList />}
         {view === 'kurstillfalle' && <KurstillfalleList />}
+        {view === 'kurstillfallelarare' && <KurstillfallelarareList />}
       </main>
     </div>
   )

@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class entityfullpackageuniqe : Migration
+    public partial class entityfullpackage : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -117,12 +117,14 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                         name: "FK_KursRegi_Deltagare_Antagen",
                         column: x => x.Antagen,
                         principalTable: "Deltagare",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_KursRegi_KursTillfalle_ID",
                         column: x => x.ID,
                         principalTable: "KursTillfalle",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -141,12 +143,14 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                         name: "FK_LarareRegi_KursTillfalle_ID",
                         column: x => x.ID,
                         principalTable: "KursTillfalle",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LarareRegi_Larare_Larare",
                         column: x => x.Larare,
                         principalTable: "Larare",
-                        principalColumn: "Email");
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -162,10 +166,9 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "UQ_KursRegi_Antagen",
+                name: "IX_KursRegi_Antagen",
                 table: "KursRegi",
-                column: "Antagen",
-                unique: true);
+                column: "Antagen");
 
             migrationBuilder.CreateIndex(
                 name: "IX_KursTillfalle_KursKodID",
@@ -184,10 +187,9 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "UQ_LarareRegi_Larare",
+                name: "IX_LarareRegi_Larare",
                 table: "LarareRegi",
-                column: "Larare",
-                unique: true);
+                column: "Larare");
 
             migrationBuilder.CreateIndex(
                 name: "UQ_Ort_Ortnamn",

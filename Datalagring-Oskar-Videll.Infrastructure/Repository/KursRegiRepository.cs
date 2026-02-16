@@ -27,6 +27,18 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
 
         try
         {
+            var list = _context.KursRegi.ToList();
+            foreach (var item in list)
+            {
+                if (entity.Antagen == item.Antagen)
+                {
+                    if (entity.ID == item.ID) 
+                    {
+                        throw new ArgumentException("Can not have a dublicate registration");
+                    }
+                }
+            }
+            
             await _context.KursRegi.AddAsync(entity);
             await _context.SaveChangesAsync(Ctoken);
 
@@ -51,14 +63,14 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
         }
     }
 
-    public async Task<bool> DeleteAsync(Guid Id, CancellationToken Ctoken)
+    public async Task<bool> DeleteAsync(int Id, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
 
-        var entity = await _context.KursRegi.SingleOrDefaultAsync(e => e.ID == Id, Ctoken);
+        var entity = await _context.KursRegi.SingleOrDefaultAsync(e => e.IDUQ == Id, Ctoken);
 
         if (entity == null)
         {
@@ -89,16 +101,16 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
         return entities;
     }
 
-    public async Task<KursRegiDto?> GetByIDAsync(Guid Id, CancellationToken Ctoken)
+    public async Task<KursRegiDto?> GetByIDAsync(int Id, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
 
         var entity = await _context.KursRegi.
             AsNoTracking().
-            Where(e => e.ID == Id).
+            Where(e => e.IDUQ == Id).
             Select(e => new KursRegiDto
             (
                 e.IDUQ,
@@ -114,12 +126,12 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
         return entity is null ? null : entity;
     }
 
-    public async Task<KursRegiDto?> UpdateAsync(Guid Id, UpdateKursRegiDto KursRequest, CancellationToken Ctoken)
+    public async Task<KursRegiDto?> UpdateAsync(int Id, UpdateKursRegiDto KursRequest, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty) {
+        if (Id == 0) {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
-        var entity = await _context.KursRegi.SingleOrDefaultAsync(e => e.ID == Id, Ctoken)
+        var entity = await _context.KursRegi.SingleOrDefaultAsync(e => e.IDUQ == Id, Ctoken)
             ?? throw new Exception("KursRegi not found");
 
         entity.status = KursRequest.Status;
@@ -129,7 +141,7 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
 
         return await _context.KursRegi.
             AsNoTracking().
-            Where(e => e.ID == Id).
+            Where(e => e.IDUQ == Id).
             Select(e => new KursRegiDto
             (
                 e.IDUQ,

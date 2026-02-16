@@ -140,8 +140,8 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
             .HasMany(m => m.KursTillfallenLarare)
             .WithMany(r => r.KurstillfalleLarare)
             .UsingEntity<KurstillfalleLarare_Entity>(
-                r => r.HasOne(e => e.LarareRegi).WithMany().HasForeignKey(e => e.Larare).OnDelete(DeleteBehavior.ClientSetNull),
-                m => m.HasOne(e => e.Kurstillfallen).WithMany().HasForeignKey(e => e.ID).OnDelete(DeleteBehavior.ClientSetNull),
+                r => r.HasOne(e => e.LarareRegi).WithMany().HasForeignKey(e => e.Larare).OnDelete(DeleteBehavior.Cascade),
+                m => m.HasOne(e => e.Kurstillfallen).WithMany().HasForeignKey(e => e.ID).OnDelete(DeleteBehavior.Cascade),
                 e =>
                 {
                     e.ToTable("LarareRegi");
@@ -149,11 +149,8 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                     e.Property(e => e.IDUQ)
                         .IsRequired()
                         .ValueGeneratedOnAdd();
-                    e.Property(e => e.Larare)
-                        .IsRequired();
-                    e.Property(e => e.ID)
-                        .IsRequired();
-                    e.HasIndex(e => e.Larare, "UQ_LarareRegi_Larare").IsUnique();
+                    e.Property(e => e.Larare);
+                    e.Property(e => e.ID);
                 }
             );
 
@@ -161,8 +158,8 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
             .HasMany(m => m.KursRegi)
             .WithMany(r => r.KursRegiDeltagare)
             .UsingEntity<KursRegi_Entity>(
-                r => r.HasOne(e => e.DeltagareRegi).WithMany().HasForeignKey(e => e.Antagen).OnDelete(DeleteBehavior.ClientSetNull),
-                m => m.HasOne(e => e.Kurstillfallen).WithMany().HasForeignKey(e => e.ID).OnDelete(DeleteBehavior.ClientSetNull),
+                r => r.HasOne(e => e.DeltagareRegi).WithMany().HasForeignKey(e => e.Antagen).OnDelete(DeleteBehavior.Cascade),
+                m => m.HasOne(e => e.Kurstillfallen).WithMany().HasForeignKey(e => e.ID).OnDelete(DeleteBehavior.Cascade),
                 e => 
                 {
                     e.ToTable("KursRegi");
@@ -170,15 +167,12 @@ public sealed class DeltagareDBContext(DbContextOptions<DeltagareDBContext> opti
                     e.Property(e => e.IDUQ)
                         .IsRequired()
                         .ValueGeneratedOnAdd();
-                    e.Property(e => e.ID)
-                        .IsRequired();
-                    e.Property(e => e.Antagen)
-                        .IsRequired();
+                    e.Property(e => e.ID);
+                    e.Property(e => e.Antagen);
                     e.Property(e => e.status)
                         .HasMaxLength(200);
                     e.Property(e => e.RegiDatum)
                         .IsRequired();
-                    e.HasIndex(e => e.Antagen, "UQ_KursRegi_Antagen").IsUnique();
                 }
             );
 

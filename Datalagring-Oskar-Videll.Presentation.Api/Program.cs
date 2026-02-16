@@ -170,7 +170,7 @@ app.MapGet("/api/Ort/{id:int}", async (int id, IOrtRepository ortOptions, Cancel
 
 app.MapPut("/api/Ort/{id:int}", async (int id, UpdateOrtDto req, IOrtRepository ortOptions, CancellationToken Ctoken) =>
 {
-    var dto = new UpdateOrtDto(req.Ortid, req.Ortnamn, req.KursTillfalle);
+    var dto = new UpdateOrtDto(req.Ortid, req.Ortnamn);
 
     var Ort = await ortOptions.UpdateAsync(id, dto, Ctoken);
 
@@ -295,7 +295,7 @@ app.MapGet("/api/KursRegi/", async (IKursRegiRepository RegiOptions, Cancellatio
     return Results.Ok(Regi);
 });
 
-app.MapGet("/api/KursRegi/{KursRegiId:guid}", async (Guid KursRegiId, IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
+app.MapGet("/api/KursRegi/{KursRegiId:int}", async (int KursRegiId, IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
 {
     var Regi = await RegiOptions.GetByIDAsync(KursRegiId,Ctoken);
 
@@ -303,7 +303,7 @@ app.MapGet("/api/KursRegi/{KursRegiId:guid}", async (Guid KursRegiId, IKursRegiR
     return Regi is null ? null : Regi;
 });
 
-app.MapPut("/api/KursRegi/{KursRegiId:guid}", async (Guid KursRegiId, UpdateKursRegiDto req, IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
+app.MapPut("/api/KursRegi/{KursRegiId:int}", async (int KursRegiId, UpdateKursRegiDto req, IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
 {
     var dto = new UpdateKursRegiDto(req.ID, req.KursRegiId, req.Antagen, req.RegistrationDate, req.Status, req.DeltagareRegi, req.Kurstillfallen);
 
@@ -314,7 +314,7 @@ app.MapPut("/api/KursRegi/{KursRegiId:guid}", async (Guid KursRegiId, UpdateKurs
         : Results.NotFound();
 });
 
-app.MapDelete("/api/KursRegi/{KursRegiId:guid}", async (Guid KursRegiId, IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
+app.MapDelete("/api/KursRegi/{KursRegiId:int}", async (int KursRegiId, IKursRegiRepository RegiOptions, CancellationToken Ctoken) =>
 {
     var deleted = await RegiOptions.DeleteAsync(KursRegiId, Ctoken);
     return deleted
@@ -340,7 +340,7 @@ app.MapGet("/api/LarareRegi/", async (ILarareRegiRepository RegiOptions, Cancell
     return Results.Ok(Regi);
 });
 
-app.MapGet("/api/LarareRegi/{LarareRegiId:guid}", async (Guid LarareRegiId, ILarareRegiRepository RegiOptions, CancellationToken Ctoken) =>
+app.MapGet("/api/LarareRegi/{LarareRegiId:int}", async (int LarareRegiId, ILarareRegiRepository RegiOptions, CancellationToken Ctoken) =>
 {
     var Regi = await RegiOptions.GetByIdAsync(LarareRegiId, Ctoken);
 
@@ -348,7 +348,7 @@ app.MapGet("/api/LarareRegi/{LarareRegiId:guid}", async (Guid LarareRegiId, ILar
     return Regi is null ? null : Regi;
 });
 
-app.MapPost("/api/LarareRegi/{LarareRegiId:guid}", async (Guid LarareRegiId, UpdateLarareRegiDto req, ILarareRegiRepository RegiOptions, CancellationToken Ctoken) =>
+app.MapPost("/api/LarareRegi/{LarareRegiId:int}", async (int LarareRegiId, UpdateLarareRegiDto req, ILarareRegiRepository RegiOptions, CancellationToken Ctoken) =>
 {
     var dto = new UpdateLarareRegiDto(req.id, req.LarareRegiId, req.LarareEmail, req.LarareRegi, req.Kurstillfallen);
 
@@ -359,7 +359,7 @@ app.MapPost("/api/LarareRegi/{LarareRegiId:guid}", async (Guid LarareRegiId, Upd
         : Results.NotFound();
 });
 
-app.MapDelete("/api/LarareRegi/{LarareRegiId:guid}", async (Guid LarareRegiId, ILarareRegiRepository RegiOptions, CancellationToken Ctoken) =>
+app.MapDelete("/api/LarareRegi/{LarareRegiId:int}", async (int LarareRegiId, ILarareRegiRepository RegiOptions, CancellationToken Ctoken) =>
 {
     var deleted = await RegiOptions.DeleteAsync(LarareRegiId, Ctoken);
     return deleted

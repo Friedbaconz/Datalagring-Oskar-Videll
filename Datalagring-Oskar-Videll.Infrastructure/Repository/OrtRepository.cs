@@ -25,8 +25,7 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             return new OrtDto
             (
                 entity.OrtId,
-                entity.OrtNamn,
-                entity.Kurstillfallen
+                entity.OrtNamn
             );
         }
         catch (Exception ex)
@@ -63,8 +62,7 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             Select(e => new OrtDto
             (
                 e.OrtId,
-                e.OrtNamn,
-                e.Kurstillfallen
+                e.OrtNamn
             ))
             .ToListAsync(Ctoken);
 
@@ -84,8 +82,7 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             .Select(e => new OrtDto
             (
                 e.OrtId,
-                e.OrtNamn,
-                e.Kurstillfallen
+                e.OrtNamn
             ))
             .SingleOrDefaultAsync(Ctoken);
 
@@ -116,8 +113,7 @@ public class OrtRepository(DeltagareDBContext context) : IOrtRepository
             .Select(e => new OrtDto
             (
                 e.OrtId,
-                e.OrtNamn,
-                e.Kurstillfallen
+                e.OrtNamn
             ))
             .SingleOrDefaultAsync(Ctoken);
     }

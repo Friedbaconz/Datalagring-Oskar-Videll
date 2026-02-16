@@ -47,7 +47,8 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
                 entity.MaxSeats,
                 entity.Ort.OrtId,
                 entity.Ort,
-                entity.KursTillfallenLarare
+                entity.KursTillfallenLarare,
+                entity.KursRegi
                 ))
             .SingleOrDefaultAsync(Ctoken);
     }
@@ -84,7 +85,8 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
                 entity.MaxSeats,
                 entity.Ort.OrtId,
                 entity.Ort,
-                entity.KursTillfallenLarare
+                entity.KursTillfallenLarare,
+                entity.KursRegi
                 ))
             .ToListAsync(Ctoken);
 
@@ -110,7 +112,8 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
                 entity.MaxSeats,
                 entity.Ort.OrtId,
                 entity.Ort,
-                entity.KursTillfallenLarare
+                entity.KursTillfallenLarare,
+                entity.KursRegi
                 ))
             .SingleOrDefaultAsync(Ctoken);
 
@@ -127,8 +130,11 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
         var entity = _context.KursTillfalle.SingleOrDefault(e => e.ID == kursTillfallenId)
             ?? throw new KeyNotFoundException($"Kurstillfalle with ID {kursTillfallenId} not found.");
 
-        entity.Startdatum = KurstillfalleRequest.Startdatum;
-        entity.Slutdatum = KurstillfalleRequest.Slutdatum;
+        var Start = DateTime.SpecifyKind(KurstillfalleRequest.Startdatum, DateTimeKind.Utc);
+        var Slut = DateTime.SpecifyKind(KurstillfalleRequest.Slutdatum, DateTimeKind.Utc);
+
+        entity.Startdatum = Start;
+        entity.Slutdatum = Slut;
         entity.MaxSeats = KurstillfalleRequest.Maxseats;
         
 
@@ -146,7 +152,8 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
                 entity.MaxSeats,
                 entity.Ort.OrtId,
                 entity.Ort,
-                entity.KursTillfallenLarare
+                entity.KursTillfallenLarare,
+                entity.KursRegi
                 ))
             .SingleOrDefaultAsync(Ctoken);
 

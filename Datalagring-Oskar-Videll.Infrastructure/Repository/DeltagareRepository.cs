@@ -15,7 +15,7 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
     public async Task<Guid> CreateAsync(CreateDeltagareDto DeltagareRequest, CancellationToken Ctoken)
     {
 
-        var Entity = new DeltagareEntity
+        var entity = new DeltagareEntity
         {
             Fornamn = DeltagareRequest.Firstname.Trim(),
             Mellannamn = DeltagareRequest.Middlename!.Trim(),
@@ -25,10 +25,10 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
         };
 
 
-            context.Deltagare_Entity.Add(Entity);
-            await context.SaveChangesAsync(Ctoken);
+            _context.Deltagare_Entity.Add(entity);
+            await _context.SaveChangesAsync(Ctoken);
 
-        return Entity.ID;
+        return entity.ID;
     }
 
 
@@ -111,13 +111,5 @@ public class DeltagareRepository(DeltagareDBContext context) : IDeltagareReposit
             .SingleOrDefaultAsync(Ctoken);
     }
 
-    private static DeltagareDto MapToDomain(DeltagareEntity entity) => new(entity.ID, entity.Fornamn, entity.Mellannamn, entity.Efternamn, entity.Email, entity.Telefonnummer, entity.KursRegiDeltagare)
-    {
-        Id = entity.ID,
-        Firstname = entity.Fornamn,
-        Middlename = entity.Mellannamn,
-        Lastname = entity.Efternamn,
-        Email = entity.Email,
-        Phonenumber = entity.Telefonnummer
-    };
+    private static DeltagareDto MapToDomain(DeltagareEntity entity) => new DeltagareDto(Id: entity.ID, Firstname: entity.Fornamn, Middlename: entity.Mellannamn, Lastname: entity.Efternamn, Email: entity.Email, Phonenumber: entity.Telefonnummer, Antagnakurser: entity.KursRegiDeltagare);
 }

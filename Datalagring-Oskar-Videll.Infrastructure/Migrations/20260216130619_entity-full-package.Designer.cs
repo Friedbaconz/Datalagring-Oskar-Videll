@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
 {
     [DbContext(typeof(DeltagareDBContext))]
-    [Migration("20260213130409_entity-full-package-uniqe")]
-    partial class entityfullpackageuniqe
+    [Migration("20260216130619_entity-full-package")]
+    partial class entityfullpackage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -92,8 +92,7 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.HasKey("ID", "Antagen", "IDUQ")
                         .HasName("PK_KursRegi_IDUQ");
 
-                    b.HasIndex(new[] { "Antagen" }, "UQ_KursRegi_Antagen")
-                        .IsUnique();
+                    b.HasIndex("Antagen");
 
                     b.ToTable("KursRegi", (string)null);
                 });
@@ -140,8 +139,7 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.HasKey("ID", "Larare", "IDUQ")
                         .HasName("PK_LarareRegi_IDUQ");
 
-                    b.HasIndex(new[] { "Larare" }, "UQ_LarareRegi_Larare")
-                        .IsUnique();
+                    b.HasIndex("Larare");
 
                     b.ToTable("LarareRegi", (string)null);
                 });
@@ -244,11 +242,13 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.HasOne("DatalagringOskarVidell.Domain.Entities.DeltagareEntity", "DeltagareRegi")
                         .WithMany()
                         .HasForeignKey("Antagen")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DatalagringOskarVidell.Domain.Entities.Kurstillfalle_Entity", "Kurstillfallen")
                         .WithMany()
                         .HasForeignKey("ID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("DeltagareRegi");
@@ -261,11 +261,13 @@ namespace Datalagring_Oskar_Videll.Infrastructure.Migrations
                     b.HasOne("DatalagringOskarVidell.Domain.Entities.Kurstillfalle_Entity", "Kurstillfallen")
                         .WithMany()
                         .HasForeignKey("ID")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DatalagringOskarVidell.Domain.Entities.Larare_Entity", "LarareRegi")
                         .WithMany()
                         .HasForeignKey("Larare")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Kurstillfallen");

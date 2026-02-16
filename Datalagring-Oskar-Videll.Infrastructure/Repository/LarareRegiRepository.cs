@@ -26,12 +26,24 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
 
         try
         {
+            var list = _Context.Larare_Kurstillfalle.ToList();
+            foreach (var item in list)
+            {
+                if (entity.Larare == item.Larare)
+                {
+                    if (entity.ID == item.ID)
+                    {
+                        throw new ArgumentException("Can not be teacher to the same kurs with multiple registrations");
+                    }
+                }
+            }
+
             await _Context.Larare_Kurstillfalle.AddAsync(entity);
             await _Context.SaveChangesAsync(Ctoken);
 
             return await _Context.Larare_Kurstillfalle
             .AsNoTracking()
-            .Where(e => e.ID == entity.ID)
+            .Where(e => e.IDUQ == entity.IDUQ)
             .Select(entity => new LarareRegiDto(
                 entity.IDUQ,
                 entity.Kurstillfallen.ID,
@@ -51,14 +63,14 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
 
     }
 
-    public async Task<bool> DeleteAsync(Guid Id, CancellationToken Ctoken)
+    public async Task<bool> DeleteAsync(int Id, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
 
-        var entity = await _Context.Larare_Kurstillfalle.SingleOrDefaultAsync(e => e.ID == Id, Ctoken);
+        var entity = await _Context.Larare_Kurstillfalle.SingleOrDefaultAsync(e => e.IDUQ == Id, Ctoken);
 
         if (entity == null)
         {
@@ -88,9 +100,9 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
         return entities;
     }
 
-    public async Task<LarareRegiDto?> GetByIdAsync(Guid Id, CancellationToken Ctoken)
+    public async Task<LarareRegiDto?> GetByIdAsync(int Id, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
@@ -105,19 +117,19 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
                 e.LarareRegi,
                 e.Kurstillfallen
             ))
-            .SingleOrDefaultAsync(e => e.LarareRegiId == Id, Ctoken);
+            .SingleOrDefaultAsync(e => e.id == Id, Ctoken);
 
         return entity is null ? null : entity;
     }
 
-    public async Task<LarareRegiDto?> UpdateAsync(Guid Id, UpdateLarareRegiDto KurstillfalleRequest, CancellationToken Ctoken)
+    public async Task<LarareRegiDto?> UpdateAsync(int Id, UpdateLarareRegiDto KurstillfalleRequest, CancellationToken Ctoken)
     {
-        if (Id == Guid.Empty)
+        if (Id == 0)
         {
             throw new ArgumentException("Id cannot be empty", nameof(Id));
         }
 
-        var entity = await _Context.Larare_Kurstillfalle.SingleOrDefaultAsync(e => e.ID == Id, Ctoken)
+        var entity = await _Context.Larare_Kurstillfalle.SingleOrDefaultAsync(e => e.IDUQ == Id, Ctoken)
             ?? throw new KeyNotFoundException($"LarareRegi with Id {Id} not found.");
 
         entity.Larare = KurstillfalleRequest.LarareEmail;
@@ -135,7 +147,7 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
                 e.LarareRegi,
                 e.Kurstillfallen
             ))
-            .SingleOrDefaultAsync(e => e.LarareRegiId == Id, Ctoken);
+            .SingleOrDefaultAsync(e => e.id == Id, Ctoken);
 
     }
 }

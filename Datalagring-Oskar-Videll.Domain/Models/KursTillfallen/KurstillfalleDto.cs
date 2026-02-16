@@ -22,6 +22,8 @@ public sealed record KurstillfalleDto(
 
     Ort_Entity Ort,
 
-    ICollection<Larare_Entity> LarareEmail
+    ICollection<Larare_Entity> LarareEmai,
+
+    ICollection<DeltagareEntity> Deltagare
  );
 
