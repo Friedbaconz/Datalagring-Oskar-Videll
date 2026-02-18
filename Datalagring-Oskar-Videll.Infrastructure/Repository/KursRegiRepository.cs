@@ -15,24 +15,37 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
 
     public async Task<KursRegiDto?> CreateAsync(CreateKursRegiDto KursRegiRequest, CancellationToken Ctoken)
     {
+        var check = await _context.KursTillfalle.AsNoTracking().FirstOrDefaultAsync(e => e.ID == KursRegiRequest.RegiID, Ctoken);
+
+        if (check == null)
+        {
+            if (check!.MaxSeats == check.KursRegi.Count)
+            {
+                throw new InvalidOperationException("No more seats available for this course");
+            }
+
+            throw new ArgumentException("KursTillfalle with the given ID does not exist", nameof(KursRegiRequest.RegiID));
+        }
+
         var entity = new KursRegi_Entity
         {
             Antagen = KursRegiRequest.Antagen,
             ID = KursRegiRequest.RegiID,
             status = KursRegiRequest.Status,
             RegiDatum = KursRegiRequest.RegistrationDate,
-            DeltagareRegi = await _context.Deltagare_Entity.FirstOrDefaultAsync(e => e.ID == KursRegiRequest.Antagen),
-            Kurstillfallen = await _context.KursTillfalle.FirstOrDefaultAsync(e => e.ID == KursRegiRequest.RegiID)
+            DeltagareRegi = await _context.Deltagare_Entity.FirstOrDefaultAsync(e => e.ID == KursRegiRequest.Antagen, Ctoken),
+            Kurstillfallen = await _context.KursTillfalle.FirstOrDefaultAsync(e => e.ID == KursRegiRequest.RegiID, Ctoken)
         };
 
         try
         {
-            var list = _context.KursRegi.ToList();
-            foreach (var item in list)
+            var list = await _context.KursRegi.ToListAsync(Ctoken);
+
+            foreach (var kursregi in list)
             {
-                if (entity.Antagen == item.Antagen)
+                if (entity.Antagen == kursregi.Antagen)
                 {
-                    if (entity.ID == item.ID) 
+                    if (entity.ID == kursregi.ID) 
                     {
                         throw new ArgumentException("Can not have a dublicate registration");
                     }

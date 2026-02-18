@@ -17,7 +17,17 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
     public async Task<KurstillfalleDto?> CreateAsync(CreateKurstillfalleDto KurstillfalleRequest, CancellationToken Ctoken)
     {
         var Start = DateTime.SpecifyKind(KurstillfalleRequest.Startdatum, DateTimeKind.Utc);
-        var Slut = DateTime.SpecifyKind(KurstillfalleRequest.Slutdatum, DateTimeKind.Utc);
+        var End = DateTime.SpecifyKind(KurstillfalleRequest.Slutdatum, DateTimeKind.Utc);
+
+        if (Start < DateTime.Now) 
+        {
+            throw new InvalidOperationException("Start can't be earlier than current date");
+        }
+
+        if (Start > End)
+        {
+            throw new InvalidOperationException("Start can't be later than end time");
+        }
 
         var entity = new Kurstillfalle_Entity
         {
@@ -25,7 +35,7 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
             ID = Guid.NewGuid(),
             KursKodID = KurstillfalleRequest.Kurskod,
             Startdatum = Start,
-            Slutdatum = Slut,
+            Slutdatum = End,
             MaxSeats = KurstillfalleRequest.Maxseats,
             Kurs = _context.Kurs.FirstOrDefault(e => e.Kurskod == KurstillfalleRequest.Kurskod),
             Ortid = KurstillfalleRequest.OrtId,
@@ -131,10 +141,20 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
             ?? throw new KeyNotFoundException($"Kurstillfalle with ID {kursTillfallenId} not found.");
 
         var Start = DateTime.SpecifyKind(KurstillfalleRequest.Startdatum, DateTimeKind.Utc);
-        var Slut = DateTime.SpecifyKind(KurstillfalleRequest.Slutdatum, DateTimeKind.Utc);
+        var End = DateTime.SpecifyKind(KurstillfalleRequest.Slutdatum, DateTimeKind.Utc);
+
+        if (Start < DateTime.Now)
+        {
+            throw new InvalidOperationException("Start can't be earlier than current date");
+        }
+
+        if (Start > End)
+        {
+            throw new InvalidOperationException("Start can't be later than end time");
+        }
 
         entity.Startdatum = Start;
-        entity.Slutdatum = Slut;
+        entity.Slutdatum = End;
         entity.MaxSeats = KurstillfalleRequest.Maxseats;
         
 

@@ -16,6 +16,14 @@ public class LarareRegiRepository(DeltagareDBContext dbContext) : ILarareRegiRep
 
     public async Task<LarareRegiDto?> CreateAsync(CreateLarareRegiDto LarareRegiRequest, CancellationToken Ctoken)
     {
+        var check = await _Context.KursTillfalle.AsNoTracking().FirstOrDefaultAsync(e => e.ID == LarareRegiRequest.LarareRegiId, Ctoken);
+
+        if (check == null)
+        {
+            throw new ArgumentException("KursTillfalle with the given ID does not exist", nameof(LarareRegiRequest.LarareRegiId));
+        }
+
+
         var entity = new KurstillfalleLarare_Entity
             {
             Larare = LarareRegiRequest.LarareEmail,
