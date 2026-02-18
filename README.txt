@@ -1,1 +1,1 @@
-Jag använder Presql för min codefirst setup. AI har används för frontend bara, den generarade stor mängd av koden i react med hjälp av ChatGPT.
+Jag använder PostgresPresql för min codefirst setup. AI har används för frontend bara, den generarade stor mängd av koden i react med hjälp av ChatGPT.
