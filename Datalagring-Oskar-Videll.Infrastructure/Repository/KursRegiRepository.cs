@@ -15,16 +15,22 @@ public class KursRegiRepository(DeltagareDBContext context) : IKursRegiRepositor
 
     public async Task<KursRegiDto?> CreateAsync(CreateKursRegiDto KursRegiRequest, CancellationToken Ctoken)
     {
-        var check = await _context.KursTillfalle.AsNoTracking().FirstOrDefaultAsync(e => e.ID == KursRegiRequest.RegiID, Ctoken);
+        var check = await _context.KursTillfalle.AsNoTracking().Where(e => e.ID == KursRegiRequest.RegiID).Select(check => new KurstillfalleDto(
+                check.ID,
+                check.Kurs.Kurskod,
+                check.Kurs,
+                check.Startdatum,
+                check.Slutdatum,
+                check.MaxSeats,
+                check.Ort.OrtId,
+                check.Ort,
+                check.KursTillfallenLarare,
+                check.KursRegi
+                )).FirstOrDefaultAsync(Ctoken);
 
-        if (check == null)
+        if (check!.Maxseats == check.Deltagare.Count)
         {
-            if (check!.MaxSeats == check.KursRegi.Count)
-            {
-                throw new InvalidOperationException("No more seats available for this course");
-            }
-
-            throw new ArgumentException("KursTillfalle with the given ID does not exist", nameof(KursRegiRequest.RegiID));
+            throw new InvalidOperationException("No more seats available for this course");
         }
 
         var entity = new KursRegi_Entity

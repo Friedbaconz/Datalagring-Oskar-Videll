@@ -19,7 +19,7 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
         var Start = DateTime.SpecifyKind(KurstillfalleRequest.Startdatum, DateTimeKind.Utc);
         var End = DateTime.SpecifyKind(KurstillfalleRequest.Slutdatum, DateTimeKind.Utc);
 
-        if (Start < DateTime.Now) 
+        if (Start < DateTime.Now.Date) 
         {
             throw new InvalidOperationException("Start can't be earlier than current date");
         }
@@ -143,7 +143,7 @@ public class KurstillfalleRepository(DeltagareDBContext context) : IKursTillfall
         var Start = DateTime.SpecifyKind(KurstillfalleRequest.Startdatum, DateTimeKind.Utc);
         var End = DateTime.SpecifyKind(KurstillfalleRequest.Slutdatum, DateTimeKind.Utc);
 
-        if (Start < DateTime.Now)
+        if (Start < DateTime.Now.Date)
         {
             throw new InvalidOperationException("Start can't be earlier than current date");
         }
